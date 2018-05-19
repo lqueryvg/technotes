@@ -1,0 +1,42 @@
+---
+# Mount 2 Azure blobs into a container so that you can
+# manually gain a shell and (say) copy the contents
+# from one to the other.
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "mount-disks"
+  labels:
+    name: "mount-disks"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: "mount-disks"
+      labels:
+        name: "mount-disks"
+    spec:
+      containers:
+      - name: "mount-disks"
+        image: "some-docker-registry/some-linux-image:some-verion"
+        args: ["sleep", "1d"]   # sleep 1 day
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 2000m
+          requests:
+            cpu: 100m
+        volumeMounts:
+          - name: "disk3"
+            mountPath: "/disk3"
+          - name: "disk4"
+            mountPath: "/disk4"
+      volumes:
+        - name: "disk3"
+          azureDisk:
+            diskName: disk3
+            diskURI: https://some-name.blob.core.windows.net/vhds/100GB_Disk.vhd
+        - name: "disk4"
+          azureDisk:
+            diskName: disk4
+            diskURI: https://some-name.blob.core.windows.net/vhds/200GB_Disk.vhd
