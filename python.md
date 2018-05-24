@@ -2,7 +2,7 @@
 
 ## Debugging
 
-```
+```python
 import pdb; pdb.set_trace()             # drop into debugger from code
 import pudb; pu.db                      # ditto, for pudb
 python -m pdb myscript.py arg1 arg2 etc # invoke on startup
@@ -12,14 +12,16 @@ pprint.pprint(vars(my_object))          # dump object
 print my_object.__dict__
 
 pip show {module}                       # show where source code stored
+pip install some_module==               # show all available versions
 ```
 
 ### Array Indices
-```
+
+```bash
     0   1   2   3   4
     H   e   l   l   o
    -5  -4  -3  -2  -1
- 
+
 a[start:end] # items start through end-1
 a[start:]    # items start through the rest of the array
 a[:end]      # items from the beginning through end-1
@@ -35,7 +37,8 @@ a = "1"; a[:-2]   # empty string
 ```
 
 ## Misc
-```
+
+```python
 line[0]                                   # first char of string
 
 price = slice(30,40)                      # named slice, use = items[price]
@@ -103,21 +106,25 @@ str.endswith(".txt")
 str.startswith("file_")
 ```
 
-# capture groups
-```
+## capture groups
+
+```python
 datepat = re.compile(r'(\d+)/(\d+)/(\d+)')      # compile first for performance
 m = datepat.match('11/27/2012')
 month, day, year = m.groups()
 ```
+
 Replace with capture groups:
-```
+
+```python
 text = 'Today is 11/27/2012. PyCon starts 3/13/2013.'
 re.sub(r'(\d+)/(\d+)/(\d+)', r'\3-\1-\2', text)
 > 'Today is 2012-11-27. PyCon starts 2013-3-13.'
 ```
 
 ## ChainMap layered lookups
-```
+
+```python
 a = {'x': 1, 'z': 3 }
 b = {'y': 2, 'z': 4 }
 c = ChainMap(a,b)
@@ -127,24 +134,25 @@ print(c['z']) # Outputs 3 (from a)
 ```
 
 ## files
-```
+
+```python
 from __future__ import print_function
 f = open('file', 'w')
 print('hello', file=f)
-```
-```
+
 with open(fname) as f:
     content = f.readlines()
-content = [x.strip() for x in content] 
+content = [x.strip() for x in content]
 ```
 
+## range vs xrange
 
-## range vs xrange 
 - use `range` for forward compat (in Python3 `range` = `xrange`)
 - unless using a large list:
   - `xrange` generally faster and less memory hungry
   - but `range` creates whole list in memory whereas `xrange` is lazy
-```
+
+```python
 for i in range(4)   # for i in [0, 1, 2, 3]
 range(2, 10, 2)     # [2, 4, 6, 8]
 
@@ -155,9 +163,11 @@ $ python -m timeit 'for i in xrange(1000000):' ' pass'    # faster
 100 loops, best of 3: 12.8 msec per loop
 ```
 
-# argparse
+## argparse
+
 - `optparse` is deprecated
-```
+
+```python
 import argparse
 parser = argparse.ArgumentParser(description='Do some stuff.')
 parser.add_argument('filename', nargs=1)
@@ -177,17 +187,23 @@ else:
 ## Iterables, Generators & Yield
 
 ### Iterable
+
 - can iterate multiple times, because values are stored in memory
-```
+
+```python
 mylist = [x*x for x in range(3)]
 ```
 
 ### Generator
+
 - can iterate only once; values are thrown away once used
-```
+
+```python
 mygenerator = (x*x for x in range(3))
 ```
+
 ### Yield
+
 - `yield x` returns a generator
 - when enclosing function is called the first time, it runs to the yield
 - next call continues from after the `yield` to the next `yield`
@@ -196,19 +212,22 @@ mygenerator = (x*x for x in range(3))
 ## Classes
 
 ### @staticmethod
+
 - this is a decorator for a method within a class
 - class is not passed implicitly as first argument (unlike a class method)
 - i.e. an ordinary method, but logically grouped with the class
 
 ### Initialise Superclass
-```
+
+```python
 class ThisClass(superClass):
   def __init__(self, my_arg):
     super(superClass, self).__init__(my_arg)
 ```
 
 ## Pydoc
-```
+
+```python
 def fred():
   """ some doc """
 
@@ -216,7 +235,8 @@ pydoc fred      # without .py extension
 ```
 
 ## Unittest
-```
+
+```python
 import unittest
 class TestThing1(unittest.TestCase):
   def one_is_one(self):
@@ -226,8 +246,9 @@ if __name__ == '__main__':
     unittest.main(verbosity=2)
 ```
 
-# dedent
-```
+## dedent
+
+```python
 from textwrap import dedent
 str = dedent(
   """
@@ -240,6 +261,7 @@ str = dedent(
 
 Need to install openssl-dev first, otherwise openssl headers not detected and
 ssl feature not compiled in.
+
 ```sh
 ./configure --prefix=/home/local \
   --enable-shared LDFLAGS="-Wl,-rpath /home/local/lib"
@@ -247,7 +269,7 @@ make
 make install
 ```
 
-# Flask
+## Flask
 
     #!/usr/bin/env python
 
@@ -278,25 +300,26 @@ make install
     if __name__ == '__main__':
         app.run()
 
-# dis
+## dis
 
     from dis import dis
     dis(func)    # only funcs allowed
 
-# CLI
+## CLI
 
     python -i main.py    # drop into interpreter prompt after running
 
-# pytest
+## pytest
+
 - path can point to a directory or a python file
 - keyword can point to a method
 
+## Pycharm shortcuts
 
-# Pycharm shortcuts
-```
+```text
 Ctrl Shift A                # find action
 
-Tab                         # indent 
+Tab                         # indent
 Ctrl /                      # Comment / uncomment
 Shift Enter                 # start new line
 Ctrl Y                      # delete current line
@@ -313,4 +336,32 @@ Ctrl Alt Shift N    # goto symbol
 Ctrl Shift F        # find in path (project)
 
 Ctrl P              # param info (within method params)
+```
+
+## pyenv
+
+```bash
+# first, remove all brew related pythons
+
+brew uninstall python...
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+# see ~/dotfiles/profile.d/python.sh for shell init
+
+pyenv install 3.4.5
+pyenv install 2.7.14
+pyenv install 3.6.5
+pyenv versions        # list all available versions
+pyenv global 3.6.5    # set the global version
+pyenv shell 2.7.14    # point this shell to a specific version
+pyenv shell -         # previous
+pyenv version         # show current
+
+git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
+# see ~/dotfiles/profile.d/python.sh for shell init
+
+pyenv virtualenv 3.6.5 john    # create venv
+pyenv virtualenvs             # list
+pyenv activate john           # activate venv
+pyenv version                   # show current
+pyenv virtualenv-delete john
 ```
