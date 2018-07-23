@@ -311,6 +311,12 @@ make install
 
 ## pytest
 
+```
+pytest dir/
+pytest file.py
+pytest -k my_method_name file.py
+```
+
 - path can point to a directory or a python file
 - keyword can point to a method
 
@@ -320,6 +326,7 @@ make install
 Ctrl Shift A                # find action
 
 Tab                         # indent
+Ctrl D                      # duplicate line
 Ctrl /                      # Comment / uncomment
 Shift Enter                 # start new line
 Ctrl Y                      # delete current line
@@ -351,10 +358,11 @@ pyenv install 3.4.5
 pyenv install 2.7.14
 pyenv install 3.6.5
 pyenv versions        # list all available versions
+pyenv version         # show current
 pyenv global 3.6.5    # set the global version
 pyenv shell 2.7.14    # point this shell to a specific version
+pyenv shell --unset   # deactivate
 pyenv shell -         # previous
-pyenv version         # show current
 
 git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
 # see ~/dotfiles/profile.d/python.sh for shell init

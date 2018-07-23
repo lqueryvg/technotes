@@ -13,6 +13,22 @@ Ctrl Up             # visual nav workspaces
 Cmd w               # close win
 ```
 
+## Screenshots
+
+To file:
+```
+Cmd Shift 3         # screen
+Cmd Shift 4         # area
+Cmd Shift 4 Space   # window
+```
+
+Add `Ctrl` to make it go to clipboard.
+
+Save location:
+```
+defaults write com.apple.screencapture location  ~/Desktop/screenshots
+```
+
 ## iterm2
 
 ```

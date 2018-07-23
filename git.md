@@ -118,6 +118,7 @@ git lol {base-branch}..              # list commits since branching from base-br
 ```
 
 ## Rebase 1
+
 ```
 git rebase {branch}     # move current branch to tip of {branch}
 ```

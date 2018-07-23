@@ -113,7 +113,9 @@ RG - Role - {Users,Groups,Apps}
 - AssignableScopes defines what objects (specific sub, rg or resource) the role is assignable to
 - Owner of a scope can create roles for assignment in that scope
 
-# VSTS CLI
+# VSTS
+
+### VSTS CLI
 
 - Setup PAT in VSTS for your personal account here...
 https://docs.microsoft.com/en-gb/vsts/accounts/use-personal-access-tokens-to-authenticate?view=vsts
@@ -127,3 +129,14 @@ vsts configure --defaults project="Your Project"
 vsts build definition show -o json
 vsts build definition show --id 82 -o json | jq '.variables |with_entries(.value |= .value)'
 ```
+
+### Tasks
+
+Clone another repo:
+
+  - script: |
+      echo current directory = `pwd`
+      git clone -b some-branch https://$SYSTEM_ACCESSTOKEN@some-project.visualstudio.com/proj-name/_git/repo-name
+    displayName: clone another repo
+
+

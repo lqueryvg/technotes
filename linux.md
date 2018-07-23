@@ -108,6 +108,7 @@ nice -n 10 command args     # run a value
 default priority = 20
 curl -LO {url}    # -L follows redirection, -O shows progress
 strace -o'|cat' -e stat,open some-command        # strace stat calls to stdout
+strace -c ls   # summarise time spent in system calls
 cmd1 <(cmd2)   # process substitution:
                # makes output of cmd2 look like a temp file to cmd1
 ```
@@ -131,6 +132,7 @@ atq             # list at jobs
 ```
 
 ## Hardware
+
 ```
 objdump -f file | grep ^architecture    # check if 32 or 64 bit
 lsusb
@@ -302,7 +304,9 @@ text/plain      # bad
   # environment and 2) the mimetype command is not installed.
 
 ```
+
 ### VNC
+
 ```
 tigervnc          # client
 tigervnc-server   # server
@@ -318,7 +322,8 @@ firewall-cmd --reload
 vncviewer -via vncuser@localhost localhost:1
 ```
 
-# Ubuntu console keyboard mapping
+## Ubuntu console keyboard mapping
+
 ```
 cd /etc/default
 vi console-setup
@@ -330,3 +335,11 @@ update-rc.d -f console-setup remove
 update-rc.d -f console-setup start 80 S .
 # or /etc/sysconfig/keyboard file
 ```
+
+## fstab
+
+Example:
+
+    #device    mountpoint type   options                               dump fsck-pass
+    #host_home /host_home vboxsf noauto,uid=1000,gid=1000,dmode=777,fmode=777 0 1
+
