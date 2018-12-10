@@ -52,7 +52,7 @@ list.append(elt)
 list.split()                  # split on whitespace
 list[-1]                      # last elt
 list.pop(0)                   # remove first elt & return it
-'row {}'.format(row_number)   # formatting (don't use % for formatting)
+'row {}'.format(row_number)   # formatting (do NOT use % for formatting)
 os.path.splitext(filename)[0] # remove file extension
 
 d = OrderedDict()       # remembers order; from collections import OrderedDict
@@ -373,3 +373,41 @@ pyenv activate john           # activate venv
 pyenv version                   # show current
 pyenv virtualenv-delete john
 ```
+
+## format
+
+From: https://kapeli.com/cheat_sheets/Python_Format_Strings.docset/Contents/Resources/Documents/index
+
+# Width and alignment
+'hey {:10}'.format('hello')       Specify width (Aign left, space fill)
+'{:010}'.format(2)                 Fill with zeroes,                Output: 0000000002
+'{:*^20}'.format('text')           Specify width, align center      Output: '********text********'
+
+# Access methods
+'{}, {}, {}'.format(1, 2, 3)                   position (>=2.7),    Output: 1, 2, 3 
+'{0}, {1}, {2}'.format(1, 2, 3)                ordinal position,    Output: 1, 2, 3
+'{v1}, {v2}, {v2}'.format(v1=1, v2=2, v3=3)   keyword,              Output: 1, 2, 2
+'{[1]}'.format(['1st', '2nd', '3rd'])          index,               Output: 2nd
+'{.name}'.format(sys.stdin)                    element attribute    Output: <stdin>
+'{[name]}'.format({'name': 'thing'})          key                   Output: something 
+
+# Numerics
+'{:x}'.format(100)            hex                                   Output: 64
+'{:X}'.format(3487)           hex (uppercase)                       Output: D9F
+'{:#x}'.format(100)           hex (including the 0x)                Output: 0x64
+'{:b}'.format(100)            Binary representation                 Output: 1100100
+'{:c}'.format(100)            Character representation              Output: d
+'{:d}'.format(100)            Decimal representation (default)      Output: 100
+'{:,}'.format(1000000)        With thousands separator              Output: 1,000,000
+'{:o}'.format(100)            Octal representation                  Output: 144
+'{:n}'.format(100)            Like d, use locale for separators     Output: 100
+'{:e}'.format(0.0000000001)   Exponent                              Output: 1.000000e-10
+'{:E}'.format(0.0000000001)   Exponent (capital 'E')                Output: 1.000000E-10
+'{:f}'.format(3/14.0)         Fixed point                           Output: 0.214286
+'{:g}'.format(3/14.0)         General format                        Output: 0.214286
+'{:%}'.format(0.66)           Percentage                            Output: 66.000000%
+'{:.3}'.format(0.214286)      Precision                             Output: 0.214
+
+# Conversion
+'{!r}'.format('string')      Call repr on args                      Output: 'string'
+'{!s}'.format(1.53438987)    Call str on args                       Output: 1.53438987

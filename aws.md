@@ -30,9 +30,22 @@
 
     aws s3api create-bucket --bucket fred
 
-    aws aws s3 ls aws s3api get-bucket-website --bucket {bucket}
+    aws s3 ls aws s3api get-bucket-website --bucket {bucket}
+    aws s3 ls s3://{bucket}/dir1/dir2/ --recursive
+    aws s3 ls {bucket}/dir1/dir2/ --recursive
     aws s3api get-bucket-policy --bucket {bucket}
-    aws iam list-policies
+    aws s3 cp s3://{bucket}/file.txt -
+
+    curl --upload-file {file} '{presigned-url}'   # can only generate through api
+    curl '{presigned-url}'     # get object contents
+
+
+    aws iam list-policies         # list customer managed policies
+
+    aws iam list-attached-user-policies     # list inline policies for user
+    aws iam list-user-policies              # list managed policies for user
+    aws iam get-user-policy                 # get inline policies for user
+
     aws sts get-caller-identity
 
 ## IAM
@@ -43,8 +56,6 @@
 - Resource:  which resource can happen to
 - Principal: who can do it
 - Effect:    deny / allow
-
-
 
 - principal (aka user)
 - policy
