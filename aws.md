@@ -51,11 +51,12 @@
 ## IAM
 
 ### CARPE
+
 - Condition: when it can happen
-- Action:    what can be done
-- Resource:  which resource can happen to
+- Action: what can be done
+- Resource: which resource can happen to
 - Principal: who can do it
-- Effect:    deny / allow
+- Effect: deny / allow
 
 - principal (aka user)
 - policy
@@ -90,3 +91,21 @@
 ## Useful links
 
 - https://iam.cloudonaut.io
+
+## ssm
+
+```bash
+aws ssm get-parameters-by-path --recursive --path  /blah/deblah # outputs json
+
+aws ssm get-parameters-by-path --recursive --path  /blah --query  # list param names \
+    'Parameters[*].[Name]' --output text
+
+
+aws ssm get-parameters-by-path --recursive --path  /blah --query \ # output "name value" pairs as space separated text
+    'Parameters[*].[Name, Value]' --output text
+
+aws ssm get-parameters --names /blah/api_key  \
+  --with-decryption                           \ # decrypt it
+  --query 'Parameters[0].Value'               \ # get value only
+  --output text                               \ # no quotes
+```
