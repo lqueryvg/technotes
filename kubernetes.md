@@ -7,7 +7,7 @@
 - group of tightly coupled containers
 - scheduling & placement unit
 - bound to a node
-- one pod is implemented as an "infra" container which 
+- one pod is implemented as an "infra" container which
 - containers share namespace
   - IP address
   - localhost
@@ -23,10 +23,10 @@
 - definition
   - spec
     - selector
-      - key: value    # specify label to select nodes to apply service to
-    - ports   # array of...
-      - port         # abstracted port that the service listens on
-      - targetPort   # port on the container
+      - key: value # specify label to select nodes to apply service to
+    - ports # array of...
+      - port # abstracted port that the service listens on
+      - targetPort # port on the container
         - default targetPort = port
         - can be string referring to pod port name
         - port number assigned to that name can be different in each pod
@@ -44,14 +44,15 @@
       - firewall rules (if needed)
       - retrieves external IP allocated by the cloud provider and populates it
         in the service object ("LoadBalancer Ingress").
-    - source IP for sessions as seen in target container are *not original IP*
+    - source IP for sessions as seen in target container are _not original IP_
       of the client (in v1.5, an optional beta feature that will preserve the
-      client Source IP for GCE/GKE environments.  Will be phased in for other
+      client Source IP for GCE/GKE environments. Will be phased in for other
       cloud providers)
     - loadBalancerSourceRanges can be used to restrict subnet ranges which can access
       - only on GCE & AWS
 
 ### Networking
+
 - default Docker host-private networking:
   - creates virtual bridge "docker0", with private CIDR address block
   - attaches a veth for each container to docker0
@@ -68,8 +69,8 @@
     - docker runs a container for each pod for the network namespace
     - app containers within that pod join the namespace with --net=container:{id}
 
-
 ### Misc
+
 - init containers
 
 ## Minikube
@@ -96,6 +97,7 @@ mk
 ```
 
 ## kubectl
+
 ```
 source <(kubectl completion bash)
 source <(kubectl completion zsh)
@@ -120,7 +122,7 @@ kubectl exec -it {pod} nslookup blah
 kubectl exec {pod} -c {container} -- ps -ef     # if multiple containers
 kubectl describe pods
 kubectl delete pod {pod}
-  
+
 kubectl logs {pod}
 kubectl exec {pod} bash
 apt-get install procps  # e.g. if ps command not available !
@@ -140,6 +142,7 @@ kubectl port-forward nginx-701339712-57hd5 8020:80
 ```
 
 ## Dashboard
+
 ```
 kubectl proxy &
 browse to http://127.0.0.1:8001/ui    # or the port provided
@@ -148,6 +151,7 @@ kubectl proxy --address='10.0.2.15'  # listen on the IP of the NAT interface
 ```
 
 ## API
+
 ```
 kubectl proxy &
 curl http://localhost:8001/api/v1/proxy/namespaces/default/pods/$POD_NAME/
@@ -157,6 +161,7 @@ curl http://localhost:8001/api/v1/proxy/namespaces/default/pods/$POD_NAME/
 ## ssh
 
 To ssh into a node, go via master, but need to temporarily copy private key.
+
 ```
 kubectl describe  nodes | grep Addresses
 scp -p ~/.ssh/id_rsa azureuser@${master}:.ssh
@@ -165,6 +170,7 @@ ssh {node_ip}
 ```
 
 ## Moving pod to another node
+
 ```
 kubectl get pods -o wide
 kubectl label nodes k8s-agentpool1-34299887-0 node_number=0
@@ -177,12 +183,15 @@ kubectl get nodes --show-labels
 ### azureDisk
 
 Add within container:
+
 ```
 volumeMounts:
   - name: azure
     mountPath: "/usr/share/nginx/html"
 ```
+
 Add within spec:
+
 ```
 volumes:
   - name: azure
@@ -190,9 +199,11 @@ volumes:
       diskName: buxton_unmanaged_disk1.vhd
       diskURI: https://buxtonblobs.blob.core.windows.net/vhds/buxton_unmanaged_disk1.vhd
 ```
+
 The blob needs to be of type "Page blob".
 
 Problems:
+
 - doesn't release the disk from the node when the pod is deleted.
 - nodes created via acs-engine don't support managed disks
 - can't create page blobs from CLI, without creating them as part of a VM first
@@ -200,12 +211,15 @@ Problems:
 ### azureFile
 
 Add within container:
+
 ```
     volumeMounts:
       - name: azure
         mountPath: "/usr/share/nginx/html"
 ```
+
 Add within spec:
+
 ```
  volumes:
       - name: azure
@@ -214,7 +228,9 @@ Add within spec:
           shareName: "buxtonshare"
           readOnly: false
 ```
+
 Next create `azure-secret.yaml` as follows:
+
 ```
 apiVersion: v1
 kind: Secret
@@ -227,6 +243,7 @@ data:
 ```
 
 Where:
+
 ```
 rg=buxton_storage_rg
 acc=buxtonblobs
@@ -236,21 +253,70 @@ echo -n ${acc} | base64    # blah1
 ```
 
 Where `blah1` and `blah2` are obtained by running:
+
 ```
-  echo -n {storage-account-name} | base64 
-  echo -n {storage-account-access-key1} | base64 
+  echo -n {storage-account-name} | base64
+  echo -n {storage-account-access-key1} | base64
 ```
 
 Important:
+
 1. the `-n` is important
-2. YES, the access key 
+2. YES, the access key
 
 ```
 kubectl create -f azure-secret.yaml
 kubectl get secrets
 ```
 
-# Vagrant Notes
+### mount disks
+
+```yaml
+# Mount 2 Azure blobs into a container so that you can
+# manually gain a shell and (say) copy the contents
+# from one to the other.
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "mount-disks"
+  labels:
+    name: "mount-disks"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: "mount-disks"
+      labels:
+        name: "mount-disks"
+    spec:
+      containers:
+        - name: "mount-disks"
+          image: "some-docker-registry/some-linux-image:some-verion"
+          args: ["sleep", "1d"] # sleep 1 day
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 2000m
+            requests:
+              cpu: 100m
+          volumeMounts:
+            - name: "disk3"
+              mountPath: "/disk3"
+            - name: "disk4"
+              mountPath: "/disk4"
+      volumes:
+        - name: "disk3"
+          azureDisk:
+            diskName: disk3
+            diskURI: https://some-name.blob.core.windows.net/vhds/100GB_Disk.vhd
+        - name: "disk4"
+          azureDisk:
+            diskName: disk4
+            diskURI: https://some-name.blob.core.windows.net/vhds/200GB_Disk.vhd
+```
+
+## Vagrant Notes
+
 ```
 mkdir ~/kv; cd $_
 export NUM_NODES=2
@@ -258,10 +324,10 @@ export KUBERNETES_PROVIDER=vagrant
 ./kubernetes/cluster/kubectl.sh
 ```
 
-# Networking
+## Networking
 
 ```
-                                             Endpoint   
+                                             Endpoint
 On node:
 
 *:31196       \  (listens on node interfaces)
@@ -273,7 +339,7 @@ NAME       CLUSTER-IP   EXTERNAL-IP   PORT(S)        AGE
 jenkins2   10.0.0.215   <.......>     80:31196/TCP   1h
            vip implemented            ^  ^
            in iptables                |  +- on "real" node interfaces
-                                      |  
+                                      |
                                       +- on cluster-ip VIP on each node
 
 % kubectl describe svc jenkins2
@@ -294,12 +360,13 @@ Endpoints:        172.17.0.10:8080        # {eth0-in-pod}:{targetPort in svc yam
 - endpoint is inside the pod (virtual eth0 device)
 - cluster-ip is a vip configured on the nodes via iptables
   - nodes should be able to connect to
-    {cluster-ip}:Port           # 10.0.0.215:80
-    {any-interface}:NodePort    # or any interface
+    {cluster-ip}:Port # 10.0.0.215:80
+    {any-interface}:NodePort # or any interface
   - pod should be able to connect to:
     Endpoint
 
 iptables rules for the above look like this:
+
 ```
 -A KUBE-SERVICES -d 10.0.0.215/32 -p tcp -m comment --comment "default/jenkins2:http cluster IP"
                                          -m tcp --dport 80 -j KUBE-SVC-6G4QFESE6JTXRJ4C
@@ -315,15 +382,16 @@ iptables rules for the above look like this:
                                  -j KUBE-MARK-MASQ
 ```
 
-# Container which sleeps...
+## Container which sleeps
 
-```
+```yaml
 command: ["bash", "-c", "sleep 7d"]
 ```
 
-# Use curl api via master without proxy
+## Use curl api via master without proxy
 
 Extract client-certificate-data into client-key-data
+
 - Open kubeconfig file and put:
   - `client-certificate-data` value into `client.crt.base64`
   - `client-key-data` value into `client.key.base64`
@@ -331,19 +399,27 @@ Extract client-certificate-data into client-key-data
 Then...
 
 ```
+
 base64_decode -D client.crt.base64 > client.crt
 base64_decode -D client.key.base64 > client.key
 openssl pkcs12 -export -in client.crt -inkey client.key -out cert.p12
-  # enter password
+
+# enter password
+
 curl -k -E cert.p12:password https://{master}/metrics
+
 ```
 
-# Getting Stats
+## Getting Stats
+
 ```
+
 curl http://127.0.0.1:8001/apis/extensions/v1beta1/namespaces/default/deployments
+
 ```
 
-# Hard way
+## Hard way
+
 - setup TLS certs
 - install haproxy / loadbalancer (with certs) pointing to controller node backends
 - install etcd on controller0,1,2 nodes and configure as a cluster (point to each other's IP)
@@ -371,8 +447,7 @@ curl http://127.0.0.1:8001/apis/extensions/v1beta1/namespaces/default/deployment
   - Get kubectl kube-proxy kubelet binaries
   - Create the kubelet service file.
   - Start the kubelet service
-  - Create the kube-proxy service file.
-	- systemctl start kube-proxy
+  - Create the kube-proxy service file. - systemctl start kube-proxy
 - on loadbalancer...
   - Restart haproxy
 - on client...
@@ -393,27 +468,21 @@ curl http://127.0.0.1:8001/apis/extensions/v1beta1/namespaces/default/deployment
     - kubectl get componentstatuses
     - kubectl get nodes
   - get the details of nodes' service network setup & add route
-    to send to send packets to appropriate subnet in cluster.
-	  - kubectl get nodes --output=jsonpath='{range .items[*]} {.spec.podCIDR} {.spec.externalID} {"\n"}{end}'
-  - Add the worker1 cidr route to this node.
-  	- ip route add 10.200.1.0/24 via 192.168.2.6
-  - Add the worker2 cidr route to this node.
-	  - ip route add 10.200.2.0/24 via 192.168.2.7
+    to send to send packets to appropriate subnet in cluster. - kubectl get nodes --output=jsonpath='{range .items[*]} {.spec.podCIDR} {.spec.externalID} {"\n"}{end}'
+  - Add the worker1 cidr route to this node. - ip route add 10.200.1.0/24 via 192.168.2.6
+  - Add the worker2 cidr route to this node. - ip route add 10.200.2.0/24 via 192.168.2.7
 - on worker1
-  - Add the worker0 cidr route to this node
-	  - ip route add 10.200.0.0/24 via 192.168.2.5
-  - Add the worker2 cidr route to this node
-	  - ip route add 10.200.2.0/24 via 192.168.2.7
+
+  - Add the worker0 cidr route to this node - ip route add 10.200.0.0/24 via 192.168.2.5
+  - Add the worker2 cidr route to this node - ip route add 10.200.2.0/24 via 192.168.2.7
 
 - on worker2
-  - Add the worker0 cidr route to this node
-	  - ip route add 10.200.0.0/24 via 192.168.2.5
-  - Add the worker1 cidr route to this node
-	  - ip route add 10.200.1.0/24 via 192.168.2.6
+  - Add the worker0 cidr route to this node - ip route add 10.200.0.0/24 via 192.168.2.5
+  - Add the worker1 cidr route to this node - ip route add 10.200.1.0/24 via 192.168.2.6
 - on client
   - get kubedns yaml
   - Check the service is in the kube-system namespace
-  - 	kubectl --namespace=kube-system get svc
+  -     kubectl --namespace=kube-system get svc
   - Create the kubedns deployment.
   - As a smoke test, run the nginx image with two pods across this cluster
   - Expose the nginx service as a port on the nodes they run on.
@@ -425,13 +494,9 @@ curl http://127.0.0.1:8001/apis/extensions/v1beta1/namespaces/default/deployment
     - iptables --list -t nat
 - on client
   - curl nginx
-    -	curl http://192.168.2.8:31244
+    - curl http://192.168.2.8:31244
 - END !
 
+```
 
-
-
-
-
-
-
+```
