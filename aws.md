@@ -23,6 +23,8 @@
 
 ## Misc
 
+List of Regions with names: https://docs.aws.amazon.com/general/latest/gr/rande.html
+
     aws ec2 describe-regions --output table
     aws ec2 describe-availability-zones --region {region}
 
@@ -47,6 +49,11 @@
     aws iam get-user-policy                 # get inline policies for user
 
     aws sts get-caller-identity
+
+    export AWS_DEFAULT_REGION=us-east-1
+    aws acm list-certificates
+    aws acm get-certificate --certificate-arn blah        # show cert text
+    aws acm describe-certificate --certificate-arn blah   # show meta data (e.g. DNS validation records)
 
 ## IAM
 
@@ -108,4 +115,28 @@ aws ssm get-parameters --names /blah/api_key  \
   --with-decryption                           \ # decrypt it
   --query 'Parameters[0].Value'               \ # get value only
   --output text                               \ # no quotes
+
+aws ssm put-parameter --name /blah/de/blah \   # put multiline value from string
+  --value file://~/Downloads/domain.key
+```
+
+## cloudfront
+
+```
+aws cloudfront create-invalidation --distribution-id $distid --paths /index.html 
+aws cloudfront list-invalidations --distribution-id $distid
+aws cloudfront get-invalidation --distribution-id $distid --id {blah}
+distribution_id=$(aws cloudfront list-distributions \
+  --query "DistributionList.Items[?Origins.Items[0].Id==\`${origin_id}\`] | [0].Id" \
+  --output text)
+```
+
+## S3
+If you want website bucket to redirect to another bucket, you have
+to use the WEBSITE endpoint, not a REST endpoint (unfortunately the
+CloudFront web UI offers a REST endpoint by default).
+```
+REST ${bucket_name}.s3.amazonaws.com
+REST ${bucket_name}.s3.${region}.amazonaws.com
+WEBSITE ${bucket_name}.s3-website.${region}.amazonaws.com
 ```

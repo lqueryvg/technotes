@@ -20,6 +20,8 @@ Download zip & unzip into PATH somewhere.
 ## destroy
 ## graph
 
+    terraform graph | dot -Tpng  | open -a Preview.app -f
+
 
 ## Misc
     ${aws_instance.example.id}   # get id from aws_instance.example resource
@@ -79,6 +81,7 @@ Other ways to pass variables:
 
     terraform console
     > azurerm_resource_group.jb-test.location
+    > basename(path.cwd)
 
 # Import
 
@@ -92,3 +95,9 @@ E.g.:
 # Debugging
 
     export TF_LOG=TRACE
+
+# Manipulating State
+
+    terraform state list
+    terraform state mv aws_route53_record.old_name aws_route53_record.new_name
+

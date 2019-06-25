@@ -1,6 +1,7 @@
 # GIT
 
 ## Concepts
+
 ```
 stage/index/cache     same thing: conceptual place to group files for commit
 index                 proposed next commit; it is a file implementing virtual
@@ -11,6 +12,7 @@ stage                 wrong!, technically should be "index"
 ```
 
 ## Commands
+
 ```
 git add file1         # add file1 create or mod to index in prep for commit
 git rm file1          # add file1 del to index in prep for commit
@@ -31,7 +33,8 @@ git add -u            # add all modified files (not untracked) files
 git add -p            # add partial file "hunks"
 ```
 
-# Getting info
+### Getting info
+
 ```
 git status                    # for current repo
 git blame file1               # show commit id against each line
@@ -45,20 +48,25 @@ git config --get-regexp alias # aliases
 ```
 
 ## Correcting Mistakes:
+
 Steps to correct a commit, before pushing to remote
 (e.g. if added a file by mistake or typed wrong message):
+
 ```
   git reset --soft 'HEAD^'  # undo commit, don't change work files
   git reset file1           # unstage
   git commit -c ORIG_HEAD   # then get chance to change message
   git checkout -- file1     # revert working changes (DANGER)
 ```
+
 or
+
 ```
   git commit --amend        # press Enter
 ```
 
 ## reset
+
 ```
 git reset --soft HEAD~              # undo last commit, files still staged
 git reset HEAD~                     # unstage
@@ -79,6 +87,7 @@ HEAD = moves head
 ```
 
 ## Remote
+
 ```
 git diff remote           # diff against remote
 git remote                # list remotes
@@ -93,6 +102,7 @@ git push origin --delete {branch}   # delete remote branch
 ```
 
 ## Config
+
 ```
 ~/.gitconfig                               #  global vars for all user repos
 .gitignore                                 #  in each repo dir
@@ -102,6 +112,7 @@ git config --global core.autocrlf false    #  leave newlines alone!
 ```
 
 ## Branching
+
 ```
 git branch b                         # new branch at current commit
 git checkout -b myfeature develop    # new branch from "develop" branch
@@ -144,7 +155,9 @@ D---E---F---G master
 ```
 
 ## Rebase 2
+
 Scenario:
+
 ```
     o---o---o---o---o  master
          \
@@ -152,7 +165,9 @@ Scenario:
                            \
                             o---o---o  topic
 ```
+
 To make `topic` fork directly from `master`, but not include commits from `next`:
+
 ```
 git rebase --onto master next topic
 
@@ -164,7 +179,9 @@ git rebase --onto master next topic
 ```
 
 ## Newlines
+
 Vundle FAQ says you should set these:
+
 ```
 git config --global core.autocrlf false
 git config --global core.safecrlf true
@@ -194,6 +211,7 @@ git commit -a -m 'some macro comment'
 
 - existing files (with README.md) are in a current dir
 - create new remote repo
+
 ```
 git init .
 git commit -m 'initial empty commit' --allow-empty
@@ -211,6 +229,7 @@ git merge-base branch1 branch2              # find first common commit
 ```
 
 ## Specifying commits (gitrevisions)
+
 ```
 {ref}^     # first parent
 {ref}^2    # second parent (assuming there are 2 parents)
@@ -220,6 +239,7 @@ git merge-base branch1 branch2              # find first common commit
 ```
 
 Examples:
+
 ```
 G   H   I   J
  \ /     \ /
@@ -251,15 +271,16 @@ https://git-scm.com/docs/gitworkflows
 
 ### Definitions
 
-| Term | Definition |
-|------|----------|
-| Feature (aka topic) branch | Temporary branch used to develop new feature or fix.
-| Public branch | Any branch which has been published and is in-use or controlled by a group of people. Examples are central or integration branches.
-| Private (aka personal) branch | A branch controlled by one person (but visible to others, so not intentionally not really "private" at all). For example, feature branches where only one developer is working on the branch.
-| Downstream | From parent branch to child, or more stable to less stable, e.g. master to feature.
-| Upstream | From child branch to parent, or less stable to more stable, eg. feature to master.
+| Term                          | Definition                                                                                                                                                                                    |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Feature (aka topic) branch    | Temporary branch used to develop new feature or fix.                                                                                                                                          |
+| Public branch                 | Any branch which has been published and is in-use or controlled by a group of people. Examples are central or integration branches.                                                           |
+| Private (aka personal) branch | A branch controlled by one person (but visible to others, so not intentionally not really "private" at all). For example, feature branches where only one developer is working on the branch. |
+| Downstream                    | From parent branch to child, or more stable to less stable, e.g. master to feature.                                                                                                           |
+| Upstream                      | From child branch to parent, or less stable to more stable, eg. feature to master.                                                                                                            |
 
 ### Goals
+
 - one commit per feature in central branch
 
 ### Rules
@@ -303,11 +324,12 @@ https://git-scm.com/docs/gitworkflows
     - feature branch will other changes from the integration branch and will no
       longer contain a single, well-separated change
   - rebase (see below) or cherry-pick instead
-- **DO** *merge* features upstream, once *complete* and *fully tested*
+- **DO** _merge_ features upstream, once _complete_ and _fully tested_
 - **DO** delete feature branches once the work is complete and it has been
   fully merged upstream (into it's final destination branch)
 
 #### Throw-away integration branches
+
 - **DO** use a throw-away integration branch to test if multiple features
   work together
 - **DON'T** base any work on a throw-away integration branch
@@ -315,7 +337,20 @@ https://git-scm.com/docs/gitworkflows
 - **DO** delete throw-away integration branches after testing
 - **DON'T** merge a throw-away integration branch upstream
 
-
 Notes:
+
 - features should graduate from less stable to more stable branches
-- JOHN only rebase a feature branch on the branch which it came from
+- (uncorroborated) only rebase a feature branch on the branch which it came from
+
+## Archive
+
+    git archive -o fred.tar HEAD
+
+## git-crypt
+
+    ${repo-root}/.gitattributes
+
+        secrets.tfvars filter=git-crypt diff=git-crypt
+
+    brew install git-crypt
+    git-crypt init
