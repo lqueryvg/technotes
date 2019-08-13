@@ -140,3 +140,50 @@ REST ${bucket_name}.s3.amazonaws.com
 REST ${bucket_name}.s3.${region}.amazonaws.com
 WEBSITE ${bucket_name}.s3-website.${region}.amazonaws.com
 ```
+
+## ACM Feature / Bug
+
+
+### Question
+
+I'm facing the following error when trying to create an SSL certificate:
+
+    * aws_acm_certificate.site_ssl_acm_certificate: Error requesting certificate:
+    LimitExceededException: Error: you have reached your limit of 10 certificates
+    in the last year.  status code: 400, request id: 91598338-b2c3-11e9-8144-231fc018067a
+
+This is despite the fact that I only have 2 certificates:
+
+    $ aws acm list-certificates --region=us-east-1
+    {
+        "CertificateSummaryList": [
+            {
+                "CertificateArn": "arn:aws:acm:us-east-1:123431574831:certificate/blahblah-9b02-4ef7-a474-31223e90bd51",
+                "DomainName": "preview.dev.homepage-site.cmdtests.com "
+            },
+            {
+                "CertificateArn": "arn:aws:acm:us-east-1:123431574831:certificate/blahblah-d138-4905-8728-e826de8c3936",
+                "DomainName": "dev.homepage-site.cmdtests.com "
+            }
+        ]
+    }
+
+### Answer
+
+> The reason you were unable to create new certificates is because of a low or
+> non-existent 'containment score' in the us-east-1 region of the account
+> 123431574831. What does this actually mean? Containment score is an anti-fraud
+> mechanism and when you are using a new region that has no prior EC2 instances
+> in it, you may run into this problem. You can avoid it by launching a small EC2
+> instance in the specific region - it should give you a containment score within
+> a few minutes, but it may take up to 4 hours on rare occasions. After that, you
+> should be good to go and you are free to delete the instance.
+> 
+> Our fraud team is definitely aware this creates a pain point for legitimate
+> customers like you and they are actively looking into a better long-term
+> solution. I had someone from the billing team look into your organization's
+> accounts and give you a containment score in all regions through all accounts,
+> meaning you should not run into this problem with your existing accounts. Newly
+> created accounts, however, may have to do the EC2 strategy to get a containment
+> score up and running.
+
