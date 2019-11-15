@@ -354,3 +354,16 @@ Notes:
 
     brew install git-crypt
     git-crypt init
+
+## rebase a feature branch that includes merges into 1 commit onto master
+
+Preparation:
+
+- `git pull` the branch and master to get them both up-to-date
+- Checkout the branch, run `git merge master` and resolve any conflicts.
+
+git co -b tmp
+git reset --soft master
+git commit -m "some message describing your changes"
+
+The new feature branch is now `tmp` and is 1 commit on top of master.
