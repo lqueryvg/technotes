@@ -16,7 +16,7 @@
  :@"             # execute yanked text as : command
  @q              # execute contents of register q
  @@              # repeat last @ command
- @:              # execute last : command (because : register is last : command)
+ @:              # execute last : command (: register is last : command)
  :cd %:h<TAB>    # cd to path of active buffer file
  :ta {tag}       # jump to tag
  :echo $VIM      # show vim config base location
@@ -26,6 +26,9 @@
 
  gg=G            # autoformat file
  :w !diff % -    # view diffs made to current buffer
+
+ :%!xxd          # convert buffer to hex
+ :%!xxd -r       # convert hex buffer back to ascii after editing
 
  # screen positioning
  gg              # go to line 1
@@ -110,7 +113,7 @@ Buffers
 
 ## Windows
 ```
- CTRL-W ^w s/v    # create horiz / vert split
+ CTRL-W s/v    # create horiz / vert split
  CTRL-W hjkl      # move focus
  CTRL-W T         # promote to tab
  CTRL-W c         # close current

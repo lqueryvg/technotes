@@ -1,6 +1,7 @@
 # Docker
 
 ## Commands
+
 ```
 sudo systemctl start docker
 usermod -aG docker john     # to run docker as non-root user
@@ -19,6 +20,9 @@ docker kill {id}
 docker exec -it {id} bash       # attach command in running container
 docker inspect {image}          # details
 docker port {container}
+
+docker run -it --entrypoint /bin/bash --user root nginx   # override entrypoint and user
+docker run -it -d -p 9090:80 -t nginx   # to connect to 9090 on local machine
 docker run -d -p 9090:80 -t nginx   # to connect to 9090 on local machine
 
 docker run -v $(pwd):/mnt -it ubuntu bash   # map/mount dir into container
@@ -38,38 +42,36 @@ image=my_image
 docker build -t $image .
 docker tag newimage {my_registry}/{some_path}/${image}:latest
 docker push {my_registry}/{some_path}/${image}:latest
+
+docker cp <containerId>:/file/path/within/container /host/path/target
 ```
 
 # Docker Compose
 
-```
-# in same dir as docker-compose.yml
+In same dir as `docker-compose.yml`
 
-docker-compose ps
-```
+    docker-compose ps
 
 # Discovering docker networking
-```
-docker network ls               # list nets
-docker run --net=host ...       # share host interfaces
-docker run --net=bridge ...     # container gets it's own interface and ip
-docker network inspect bridge   # shows containers and ips
-brctl show
-brctl showmacs docker0   # is local yes = mac is on interface on docker host
-                         # is local no  = mac learnt from connected container
-grep . /sys/class/net/docker0/brif/veth*/port_no
-```
+
+    docker network ls               # list nets
+    docker run --net=host ...       # share host interfaces
+    docker run --net=bridge ...     # container gets it's own interface and ip
+    docker network inspect bridge   # shows containers and ips
+    brctl show
+    brctl showmacs docker0   # is local yes = mac is on interface on docker host
+                            # is local no  = mac learnt from connected container
+    grep . /sys/class/net/docker0/brif/veth*/port_no
 
 ## Commit
 
-```
-exit container
-docker ps -a                    # get {id} of exited container
-docker commit {id} my/myname    # commit your changes to new image
-docker run -it me/myname        # carry on where you left off
-```
+    exit container
+    docker ps -a                    # get {id} of exited container
+    docker commit {id} my/myname    # commit your changes to new image
+    docker run -it me/myname        # carry on where you left off
 
 ## Notes
+
 - container ids abbreviate to anything unique
 - container primary process pid=1
 - container exits when primary process dies
@@ -77,32 +79,40 @@ docker run -it me/myname        # carry on where you left off
 ## Dockerfile
 
 #### CMD
-- default command for `docker run`
+
+- behaviour depends on whether `ENTRYPOINT` is set:
+  - without `ENTRYPOINT`, specifies default command (and args) for `docker run`
+  - with `ENTRYPOINT`, specifies default args to be added to `ENTRYPOINT`
 - overridden when `docker run` is given a command
 - string syntax gets prepended with `sh -c`
 - use array syntax to be precise
-- should only be one; if multiple, last one wins
+- should only be one; if there are multiple, the last one wins
 
 #### ENTRYPOINT
-- base command which precedes CMD
+
+- base command which precedes args specified by `CMD`
 - override with `docker run --entrypoint`
 
 #### WORKDIR
+
 - set dir for next `RUN`, `CMD` or `ENTRYPOINT`
 - can be used multiple times override with `-w`
 
 #### ENV
+
 - set environment variables
 - e.g. `ENV VAR1 value`
 - persists into containers created from image
 - see also `-e` flag
 
 #### USER
+
 - specify user the image runs as
 - see also `-u` flag
 - default is root
 
 #### VOLUME
+
 - add volumes to container
 - changes are made directly
 - not affected when you update an image
@@ -111,18 +121,22 @@ docker run -it me/myname        # carry on where you left off
 - e.g. source code, database
 
 #### ADD
+
 - copies files into container with tar & http support
 - trailing `/` on target specifies source is a directory
 
 #### COPY
+
 - like add but no support for tar or http
 
 #### ONBUILD
+
 - execute trigger when this image is used as base for of another
 
-
 #### ARG
+
 defines a variable for user can to pass with `build` with optional default
+
 ```
 ARG DEBIAN_FRONTEND=noninteractive
 ```
@@ -130,13 +144,16 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Filesystem types
 
 # Device mapper
+
 - used by default when AUFS is not available (e.g. on Centos 7)
 
 # AUFS
+
 - AUFS CoW works at file level => small changes to large files = slower
 - search order through layer = top to bottom => slower for files at bottom
 - delete places "whiteout" file in top layer
 
 # Cache miss
+
 Failure to use a cached image, because `docker build` thinks
 the next Dockerfile directive will cause the image to change.

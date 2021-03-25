@@ -58,6 +58,7 @@ Port 8080 on ssh client is now being forwarded to 8001 on remote.
 # Misc
 ssh-copy-id                 # copy ssh id to another server
 ssh-keygen -lf id_rsa.pub   # show fingerprint
+ssh-keygen -E md5 -lf id_rsa.pub   # fingerprint with common, one-line syntax
 ssh-keygen -y -f blah.priv  # generate public from private
 
 ## `~/.ssh/config`

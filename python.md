@@ -322,28 +322,33 @@ pytest -k my_method_name file.py
 
 ## Pycharm shortcuts
 
-```text
-Ctrl Shift A                # find action
+Highlights:
 
-Tab                         # indent
-Ctrl D                      # duplicate line
-Ctrl /                      # Comment / uncomment
-Shift Enter                 # start new line
-Ctrl Y                      # delete current line
-Shift F6                    # rename
-Ctrl Alt L                  # reformat file
-
-Ctrl B                      # go to declaration
-Ctrl Shift Left / Right     # go back / forward
-
-Ctrl .                      # fold
-Alt Down / Up               # next / prev method
-
-Ctrl Alt Shift N    # goto symbol
-Ctrl Shift F        # find in path (project)
-
-Ctrl P              # param info (within method params)
 ```
+Ctrl Cmd g              # select all occurances
+Tab                     # indent selected lines
+Shift Tab               # un-indent selected lines
+Ctrl P                  # param info within function
+Shift Enter             # start new line
+Ctrl Alt Shift N        # go to symbol
+Ctrl Shift Left / Right # nav back / forward
+Ctrl B / Ctrl Click     # go to declaration
+Ctrl Shift F            # find in path (project)
+Shift F6                # rename
+Ctrl Shift A            # find action
+```
+
+General:
+
+```text
+Ctrl D        # duplicate line
+Ctrl /        # Comment / uncomment
+Ctrl Y        # delete current line
+Ctrl Alt L    # reformat file
+Ctrl .        # fold
+Alt Down / Up # next / prev method
+```
+
 
 ## pyenv
 

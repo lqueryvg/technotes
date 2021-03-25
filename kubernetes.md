@@ -2,6 +2,70 @@
 
 ## Concepts
 
+### Components (`CEASKP`)
+
+| What                    | Where  | Notes                                                             |
+| ------------------      | ------ | ----------------------------------------------------------------- |
+| kube-controller-manager | master | watches for changes and manages state                             |
+| etcd                    | master | key / value config store                                          |
+| kube-apiserver          | master | all components communicate through here, including user (kubectl) |
+| kube-scheduler          | master | decides where (which nodes) to run pods                           |
+| kubelet                 | node   | (service!) register node, create pods, monitor node & pods        |
+| kube-proxy              | node   | controls iptables                                                 |
+
+#### etcd
+
+- key / value store
+- can run as a service or a POD (kubeadm)
+- listens on `--adertise-client-urls` URL (port 2379)
+- points to other etcd's in cluster via `--intial-cluster` comma separated list of URLs
+
+#### kube-apiserver
+
+- can run as a service or a POD (kubeadm)
+- can curl to this instead of using kubectl
+- responsible for:
+  - authenticate user
+  - validate request
+  - retrieve data
+  - update etcd (it is the only service which updates etcd)
+- used by scheduler & kubelet
+- points to etcd's via `--etcd-servers`
+
+#### kube-scheduler
+
+- can run as a service or a POD (kubeadm)
+- only decides where to run a POD, doesn't start it (`kubelet` starts it)
+
+#### kube-proxy
+
+- can run as a service or a POD (kubeadm)
+- if deployed as a Pod (via kubeadm) it runs as a daemonset
+
+#### kube-controller-manager
+
+- can run as a service or a POD (kubeadm)
+- configures enabled controllers via `--controllers` option
+
+##### Replication Controller / ReplicaSet
+- high availability
+- load balancing & scaling
+- Replication Controller is old; replaced by Replica Set
+- ReplicaSet adds `selector`
+
+### YAML Structure
+
+Always contains:
+
+- `apiVersion`
+- `kind` (supported values depends on `apiVersion`)
+- `metadata`
+- `spec`
+
+#### Generators
+
+    kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run --replicas=4 -o yaml > nginx-deployment.yaml
+
 ### Pods
 
 - group of tightly coupled containers
@@ -75,26 +139,24 @@
 
 ## Minikube
 
-```
-mkdir ~/minikube; cd $_
-curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.17.1/minikube-darwin-amd64
-chmod +x minikube
-./minikube
-# will modify $KUBECONFIG
-cp $KUBECONFIG ./minikube.kubeconfig
-alias mk='export KUBECONFIG=~/minikube/minikube.kubeconfig'
+    mkdir ~/minikube; cd $_
+    curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.17.1/minikube-darwin-amd64
+    chmod +x minikube
+    ./minikube
+    # will modify $KUBECONFIG
+    cp $KUBECONFIG ./minikube.kubeconfig
+    alias mk='export KUBECONFIG=~/minikube/minikube.kubeconfig'
 
-minikube version
-minikube status
-minikube start
-minikube addons enable heapster
-minikube addons open heapster   # takes a while then opens grafana in browser
+    minikube version
+    minikube status
+    minikube start
+    minikube addons enable heapster
+    minikube addons open heapster   # takes a while then opens grafana in browser
 
-minikube ssh      # get prompt
-sudo -i
-alias mk='export KUBECONFIG=/Users/john/minikube/minikube.kubeconfig'
-mk
-```
+    minikube ssh      # get prompt
+    sudo -i
+    alias mk='export KUBECONFIG=/Users/john/minikube/minikube.kubeconfig'
+    mk
 
 ## kubectl
 
@@ -139,44 +201,40 @@ kubectl --namespace=demos get svc hostnames -o yaml
 
 # pass connections on 8020 to 80 in pod
 kubectl port-forward nginx-701339712-57hd5 8020:80
+
+# get secret for UI token
+kubectl -n kube-system describe secret \
+  $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
 ```
 
 ## Dashboard
 
-```
-kubectl proxy &
-browse to http://127.0.0.1:8001/ui    # or the port provided
-# or, if kubectl is running inside a VM and you want to browse from the host
-kubectl proxy --address='10.0.2.15'  # listen on the IP of the NAT interface
-```
+    kubectl proxy &
+    browse to http://127.0.0.1:8001/ui    # or the port provided
+    # or, if kubectl is running inside a VM and you want to browse from the host
+    kubectl proxy --address='10.0.2.15'  # listen on the IP of the NAT interface
 
 ## API
 
-```
-kubectl proxy &
-curl http://localhost:8001/api/v1/proxy/namespaces/default/pods/$POD_NAME/
-  # trailing slash is important
-```
+    kubectl proxy &
+    curl http://localhost:8001/api/v1/proxy/namespaces/default/pods/$POD_NAME/
+      # trailing slash is important
 
 ## ssh
 
 To ssh into a node, go via master, but need to temporarily copy private key.
 
-```
-kubectl describe  nodes | grep Addresses
-scp -p ~/.ssh/id_rsa azureuser@${master}:.ssh
-ssh azureuser@${master}
-ssh {node_ip}
-```
+    kubectl describe  nodes | grep Addresses
+    scp -p ~/.ssh/id_rsa azureuser@${master}:.ssh
+    ssh azureuser@${master}
+    ssh {node_ip}
 
 ## Moving pod to another node
 
-```
-kubectl get pods -o wide
-kubectl label nodes k8s-agentpool1-34299887-0 node_number=0
-kubectl label nodes k8s-agentpool1-34299887-1 node_number=1
-kubectl get nodes --show-labels
-```
+    kubectl get pods -o wide
+    kubectl label nodes k8s-agentpool1-34299887-0 node_number=0
+    kubectl label nodes k8s-agentpool1-34299887-1 node_number=1
+    kubectl get nodes --show-labels
 
 ## Azure Persistent Volumes
 
@@ -184,21 +242,17 @@ kubectl get nodes --show-labels
 
 Add within container:
 
-```
-volumeMounts:
-  - name: azure
-    mountPath: "/usr/share/nginx/html"
-```
+    volumeMounts:
+      - name: azure
+        mountPath: "/usr/share/nginx/html"
 
 Add within spec:
 
-```
-volumes:
-  - name: azure
-    azureDisk:
-      diskName: buxton_unmanaged_disk1.vhd
-      diskURI: https://buxtonblobs.blob.core.windows.net/vhds/buxton_unmanaged_disk1.vhd
-```
+    volumes:
+      - name: azure
+        azureDisk:
+          diskName: buxton_unmanaged_disk1.vhd
+          diskURI: https://buxtonblobs.blob.core.windows.net/vhds/buxton_unmanaged_disk1.vhd
 
 The blob needs to be of type "Page blob".
 
@@ -212,26 +266,26 @@ Problems:
 
 Add within container:
 
-```
-    volumeMounts:
-      - name: azure
-        mountPath: "/usr/share/nginx/html"
+```yaml
+volumeMounts:
+  - name: azure
+    mountPath: "/usr/share/nginx/html"
 ```
 
 Add within spec:
 
-```
- volumes:
-      - name: azure
-        azureFile:
-          secretName: azure-secret
-          shareName: "buxtonshare"
-          readOnly: false
+```yaml
+volumes:
+  - name: azure
+    azureFile:
+      secretName: azure-secret
+      shareName: "buxtonshare"
+      readOnly: false
 ```
 
 Next create `azure-secret.yaml` as follows:
 
-```
+```yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -244,20 +298,16 @@ data:
 
 Where:
 
-```
-rg=buxton_storage_rg
-acc=buxtonblobs
-az storage account show  -n $acc -g $rg
-az storage account keys list -n $acc -g $rg
-echo -n ${acc} | base64    # blah1
-```
+    rg=buxton_storage_rg
+    acc=buxtonblobs
+    az storage account show  -n $acc -g $rg
+    az storage account keys list -n $acc -g $rg
+    echo -n ${acc} | base64    # blah1
 
 Where `blah1` and `blah2` are obtained by running:
 
-```
-  echo -n {storage-account-name} | base64
-  echo -n {storage-account-access-key1} | base64
-```
+    echo -n {storage-account-name} | base64
+    echo -n {storage-account-access-key1} | base64
 
 Important:
 
@@ -265,8 +315,8 @@ Important:
 2. YES, the access key
 
 ```
-kubectl create -f azure-secret.yaml
-kubectl get secrets
+   kubectl create -f azure-secret.yaml
+   kubectl get secrets
 ```
 
 ### mount disks
@@ -317,12 +367,10 @@ spec:
 
 ## Vagrant Notes
 
-```
-mkdir ~/kv; cd $_
-export NUM_NODES=2
-export KUBERNETES_PROVIDER=vagrant
-./kubernetes/cluster/kubectl.sh
-```
+    mkdir ~/kv; cd $_
+    export NUM_NODES=2
+    export KUBERNETES_PROVIDER=vagrant
+    ./kubernetes/cluster/kubectl.sh
 
 ## Networking
 
@@ -382,6 +430,13 @@ iptables rules for the above look like this:
                                  -j KUBE-MARK-MASQ
 ```
 
+## command and args
+
+- `command` overrides docker `ENTRYPOINT`
+- `args` overrides docker `CMD`
+
+(Counter-intuitively, `command` does *not* override `CMD` !!!)
+
 ## Container which sleeps
 
 ```yaml
@@ -398,25 +453,17 @@ Extract client-certificate-data into client-key-data
 
 Then...
 
-```
+    base64_decode -D client.crt.base64 > client.crt
+    base64_decode -D client.key.base64 > client.key
+    openssl pkcs12 -export -in client.crt -inkey client.key -out cert.p12
 
-base64_decode -D client.crt.base64 > client.crt
-base64_decode -D client.key.base64 > client.key
-openssl pkcs12 -export -in client.crt -inkey client.key -out cert.p12
+    # enter password
 
-# enter password
-
-curl -k -E cert.p12:password https://{master}/metrics
-
-```
+    curl -k -E cert.p12:password https://{master}/metrics
 
 ## Getting Stats
 
-```
-
-curl http://127.0.0.1:8001/apis/extensions/v1beta1/namespaces/default/deployments
-
-```
+    curl http://127.0.0.1:8001/apis/extensions/v1beta1/namespaces/default/deployments
 
 ## Hard way
 
@@ -495,8 +542,4 @@ curl http://127.0.0.1:8001/apis/extensions/v1beta1/namespaces/default/deployment
 - on client
   - curl nginx
     - curl http://192.168.2.8:31244
-- END !
-
-```
-
-```
+- DONE !

@@ -100,4 +100,3 @@ E.g.:
 
     terraform state list
     terraform state mv aws_route53_record.old_name aws_route53_record.new_name
-

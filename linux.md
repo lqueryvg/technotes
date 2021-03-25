@@ -111,6 +111,9 @@ strace -o'|cat' -e stat,open some-command        # strace stat calls to stdout
 strace -c ls   # summarise time spent in system calls
 cmd1 <(cmd2)   # process substitution:
                # makes output of cmd2 look like a temp file to cmd1
+
+date --date='06/12/2012 07:21:22' +%s     # convert to unix time
+date -jf "%T %D" "14:46:00 1/1/18" +%s    # same, on Mac
 ```
 ## Ag - Silver Searcher
 

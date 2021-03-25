@@ -1,5 +1,19 @@
 # Javascript
 
+## Debugging tip
+
+To print variables on console.
+
+Instead of:
+
+    > console.log(`a = ${a}`)
+    a = 1
+
+Wrap the variable in an object:
+
+    > console.log({a})
+    { a: 1 }
+
 ## arrow functions
 
     const functionName = param => { body; };
@@ -55,4 +69,20 @@ In function declaration (rest):
 
           return response
         }
+
+## Misc
+
+    eslint --print-config file.js
+    npm pack          # build local tar file
+    npm install {tarball}
+
+## Node search path
+
+    module.paths      # contains search path
+
+### Require with globally installed modules
+
+By default `require()` doesn't search in global modules install location.
+To `require()` globally installed modules, either use `npm link` or `NODE_PATH`.
+E.g. `export NODE_PATH=/usr/local/lib/node_modules`
 

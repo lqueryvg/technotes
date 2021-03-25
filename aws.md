@@ -42,11 +42,20 @@ List of Regions with names: https://docs.aws.amazon.com/general/latest/gr/rande.
     curl '{presigned-url}'     # get object contents
 
 
-    aws iam list-policies         # list customer managed policies
+    aws iam list-policies                   # list all policies
+    aws iam list-policies --scope Local     # list customer managed policies
+    aws iam get-policy --policy-arn {arn}                    # to get the version number
+    aws iam get-policy-version --policy-arn {arn} --version-id v{n}  # the policy itself
 
     aws iam list-attached-user-policies     # list inline policies for user
     aws iam list-user-policies              # list managed policies for user
     aws iam get-user-policy                 # get inline policies for user
+
+    aws iam get-role --role-name blah
+    aws iam list-role-policies --role-name blah
+    aws iam list-attached-role-policies --role-name blah   # managed policies attached to role
+    aws iam get-role-policy --role-name {role} --policy-name {policy}   # inline policies
+
 
     aws sts get-caller-identity
 
@@ -54,6 +63,31 @@ List of Regions with names: https://docs.aws.amazon.com/general/latest/gr/rande.
     aws acm list-certificates
     aws acm get-certificate --certificate-arn blah        # show cert text
     aws acm describe-certificate --certificate-arn blah   # show meta data (e.g. DNS validation records)
+
+    # list VPCs with Name (tag) and CIDR
+    aws ec2 describe-vpcs --output table --query '
+        Vpcs[].[Tags[?Key==`Name`] 
+        | [0].Value, CidrBlock, VpcId]
+      '
+
+    # subnets sort by VpcId
+    aws ec2 describe-subnets --output table --query '
+        Subnets[].[
+          VpcId,
+          AvailabilityZone,
+          Tags[?Key==`Name`] | [0].Value,
+          CidrBlock
+        ] | sort_by(@, &[0])
+      '
+
+    # subnets sort by VpcId then AZ
+    aws ec2 describe-subnets --output table --query '
+        Subnets[].[
+          join(`:`, [VpcId, AvailabilityZone]),
+          Tags[?Key==`Name`] | [0].Value,
+          CidrBlock
+        ] | sort_by(@, &[0])
+      '
 
 ## IAM
 
@@ -116,7 +150,7 @@ aws ssm get-parameters --names /blah/api_key  \
   --query 'Parameters[0].Value'               \ # get value only
   --output text                               \ # no quotes
 
-aws ssm put-parameter --name /blah/de/blah \   # put multiline value from string
+aws ssm put-parameter --name /blah/de/blah \   # put multiline value from file
   --value file://~/Downloads/domain.key
 ```
 
@@ -159,11 +193,11 @@ This is despite the fact that I only have 2 certificates:
         "CertificateSummaryList": [
             {
                 "CertificateArn": "arn:aws:acm:us-east-1:123431574831:certificate/blahblah-9b02-4ef7-a474-31223e90bd51",
-                "DomainName": "preview.dev.homepage-site.cmdtests.com "
+                "DomainName": "preview.dev.xyz.com "
             },
             {
                 "CertificateArn": "arn:aws:acm:us-east-1:123431574831:certificate/blahblah-d138-4905-8728-e826de8c3936",
-                "DomainName": "dev.homepage-site.cmdtests.com "
+                "DomainName": "dev.xyz.com "
             }
         ]
     }
@@ -187,3 +221,12 @@ This is despite the fact that I only have 2 certificates:
 > created accounts, however, may have to do the EC2 strategy to get a containment
 > score up and running.
 
+
+
+
+## Lambda
+
+    xyzhandler(event, context, callback)
+    callback(error, response)       # call this from a sync handler (not async)
+                                    # set error to null to return a response
+                                    # response can be anything which can be stringified

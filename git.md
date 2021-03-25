@@ -24,6 +24,7 @@ git diff x..y         # the diff between two endpoints or commits
                       #   (same as git diff x y)
 git diff x...y        # find common ancestor of x and y,
                       #   and then diff from there to y
+git diff rev1:file1 rev2:file2     #  diff different files in different revisions
 git log x..y          # list commits on branch y but not on branch x
                       #   (same as git log y ^x)
 git log x...y         # list commits in x or y, but not both
@@ -226,6 +227,7 @@ git push -f --set-upstream origin master
 ```
 git submodule update --init --recursive
 git merge-base branch1 branch2              # find first common commit
+git rev-list --all | xargs git grep "string/regexp"     # git grep
 ```
 
 ## Specifying commits (gitrevisions)
