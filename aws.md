@@ -37,6 +37,8 @@ List of Regions with names: https://docs.aws.amazon.com/general/latest/gr/rande.
     aws s3 ls {bucket}/dir1/dir2/ --recursive
     aws s3api get-bucket-policy --bucket {bucket}
     aws s3 cp s3://{bucket}/file.txt -
+    aws s3 cp file.txt s3://DOC-EXAMPLE-BUCKET --acl bucket-owner-full-control
+
 
     curl --upload-file {file} '{presigned-url}'   # can only generate through api
     curl '{presigned-url}'     # get object contents

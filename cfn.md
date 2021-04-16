@@ -5,7 +5,10 @@ cfn validate-template --template-body file://MyStack.json
 cfn create-stack --template-body file://example-stack.json --stack-name example-stack
 cfn describe-stack-events --stack-name example-stack
 cfn describe-stack-resources --stack-name example-stack
-cfn update-stack --template-body file://example-stack.json --stack-name example-stack
+cfn update-stack --template-body file://example-stack.json --stack-name example-stack \
+  --parameters \   # optional
+     ParameterKey=KeyPairName1,ParameterValue=SampleKeyPair1 \
+     ParameterKey=KeyPairName2,ParameterValue=SampleKeyPair2
 aws ec2 describe-tags --filter "resource-type=instance" --filter "resource-id=i-5689cc1d"
 cfn-get-template  # get template from running instance
 cfn delete-stack --stack-name example-stack
