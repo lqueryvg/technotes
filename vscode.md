@@ -1,9 +1,9 @@
 # Keyboard Shortcuts
 
     Cmd Click             # go to declaration
-    Ctrl -                # navigate back
+    Ctrl -                # go back
+    Cmd k Cmd q           # go to last edit position
     Ctrl Shift -          # forward
-
     Cmd === Ctrl
     Opt === Alt
 
@@ -12,6 +12,7 @@
     Opt up/down           # move current line(s)
     Shift Opt up/down     # duplicate current line(s) above/below
     Ctrl C                # copy line
+    Ctrl j                # join lines
 
     Cmd Shift k           # delete line(s) container cursor or selection
 

@@ -325,17 +325,20 @@ pytest -k my_method_name file.py
 Highlights:
 
 ```
+Ctrl Shift A            # find action
 Ctrl Cmd g              # select all occurances
 Tab                     # indent selected lines
 Shift Tab               # un-indent selected lines
-Ctrl P                  # param info within function
+Cmd Backspace           # delete line
+Cmd D                   # duplicate line
 Shift Enter             # start new line
+Option Shift Up / Down  # move line
 Ctrl Alt Shift N        # go to symbol
 Ctrl Shift Left / Right # nav back / forward
 Ctrl B / Ctrl Click     # go to declaration
 Ctrl Shift F            # find in path (project)
 Shift F6                # rename
-Ctrl Shift A            # find action
+Ctrl P                  # param info within function
 ```
 
 General:
@@ -359,6 +362,8 @@ brew uninstall python...
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 # see ~/dotfiles/profile.d/python.sh for shell init
 
+
+pyenv install --list  # list avaiable python version (depends on pyenv version)
 pyenv install 3.4.5
 pyenv install 2.7.14
 pyenv install 3.6.5
@@ -368,6 +373,7 @@ pyenv global 3.6.5    # set the global version
 pyenv shell 2.7.14    # point this shell to a specific version
 pyenv shell --unset   # deactivate
 pyenv shell -         # previous
+pyenv local           # show 
 
 git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
 # see ~/dotfiles/profile.d/python.sh for shell init
