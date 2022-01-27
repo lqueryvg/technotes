@@ -4,6 +4,7 @@
     Ctrl -                # go back
     Cmd k Cmd q           # go to last edit position
     Ctrl Shift -          # forward
+    Opt left/right        # move cursor wordwise
     Cmd === Ctrl
     Opt === Alt
 
