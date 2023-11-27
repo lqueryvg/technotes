@@ -60,11 +60,13 @@ List of Regions with names: https://docs.aws.amazon.com/general/latest/gr/rande.
 
 
     aws sts get-caller-identity
+    aws sts assume-role --role-arn "arn:aws:iam::123456789012:role/example-role" --role-session-name AWSCLI-Session
 
     export AWS_DEFAULT_REGION=us-east-1
     aws acm list-certificates
     aws acm get-certificate --certificate-arn blah        # show cert text
     aws acm describe-certificate --certificate-arn blah   # show meta data (e.g. DNS validation records)
+    aws cloudwatch set-alarm-state --alarm-name {alarm-name} --state-value "OK" --state-reason "test"
 
     # list VPCs with Name (tag) and CIDR
     aws ec2 describe-vpcs --output table --query '

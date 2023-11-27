@@ -314,7 +314,7 @@ make install
 ```
 pytest dir/
 pytest file.py
-pytest -k my_method_name file.py
+pytest -k method_or_file_pattern file.py
 ```
 
 - path can point to a directory or a python file

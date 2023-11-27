@@ -13,6 +13,7 @@
     asdf plugin add {name}
     asdf plugin list            # none, initially
     asdf plugin update --all
+    cut -d' ' -f1 .tool-versions | xargs -I% asdf plugin add %
 
     asdf current
 
@@ -22,7 +23,8 @@
     asdf install {name} 3.8.3
 
     asdf install {name} {latest|version}
-    asdf global exa latest
+    asdf uninstall {name} {version}
+    asdf global {name} latest
     
     asdf {global|shell|local} {name} {latest|version}
 

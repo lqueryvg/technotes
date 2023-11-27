@@ -1,5 +1,35 @@
 # Javascript
 
+## The problems with var
+
+1. It is not scope safe, so you can accidentally overwrite variables in the
+   outer scope:
+
+Example 1:
+
+    var a = "a"
+    if (true) { var a = 2 }
+    console.log(a)  // 2
+
+Example 2:
+
+    var i = 13
+    for (var i=1; i<4; i++) { }
+    console.log(i)  // 13
+
+2. can use variables before they've been declared (hoisting #1):
+
+    console.log(a)  // prints "undefined", instead of an exception
+    var a = 2
+
+3. can use variables declared from an inner scope (hoisting #2:
+
+    { var a = "2" }
+    console.log(a) // 2
+
+4. var variables are added to window object
+
+
 ## Debugging tip
 
 To print variables on console.
@@ -23,16 +53,16 @@ Wrap the variable in an object:
 
 On RHS of assigment (spread *expands* the elements):
 
-    var other = [ 1, 2, ...rows ];    # expand all elements of 'rows' array
+    const other = [ 1, 2, ...rows ];    # expand all elements of 'rows' array
 
-    var dateFields = [1970, 0, 1];
-    var d = new Date(...dateFields);  # call Date() with array elements as params
+    const dateFields = [1970, 0, 1];
+    const d = new Date(...dateFields);  # call Date() with array elements as params
 
     # with objects:
-    var obj1 = { foo: 'bar', x: 42 };
-    var obj2 = { foo: 'baz', y: 13 };
-    var clonedObj = { ...obj1 };          # Object { foo: "bar", x: 42 }
-    var mergedObj = { ...obj1, ...obj2 }; # Object { foo: "baz", x: 42, y: 13 }
+    const obj1 = { foo: 'bar', x: 42 };
+    const obj2 = { foo: 'baz', y: 13 };
+    const clonedObj = { ...obj1 };          # Object { foo: "bar", x: 42 }
+    const mergedObj = { ...obj1, ...obj2 }; # Object { foo: "baz", x: 42, y: 13 }
 
 On LHS of assignment (spread *collects* the elements):
 
@@ -86,3 +116,7 @@ By default `require()` doesn't search in global modules install location.
 To `require()` globally installed modules, either use `npm link` or `NODE_PATH`.
 E.g. `export NODE_PATH=/usr/local/lib/node_modules`
 
+### Hash
+
+    import crypto from 'crypto'
+    const data = crypto.createHash('sha256').update(s).digest()
