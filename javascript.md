@@ -120,3 +120,9 @@ E.g. `export NODE_PATH=/usr/local/lib/node_modules`
 
     import crypto from 'crypto'
     const data = crypto.createHash('sha256').update(s).digest()
+
+### Match
+
+    const match = line.match(/(...)=(\S+) -> (.*)/)
+    const [_, prefix, name, targetsText] = match!
+

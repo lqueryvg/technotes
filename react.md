@@ -88,14 +88,14 @@ Element attributes:
 
 - `useEffect(callback, dependencies)`
 - `dependencies` is an optional array:
+  - no dependencies param
+    - callback called after _every_ render (including the first)
   - empty array
     - callback called only after first render
     - same as `componentDidMount()`
   - array of values
     - callback called only when any of the values change
     - same as `componentDidUpdate()`
-  - no dependencies:
-    - callback called after _every_ render (including the first)
 - callback may return a _cleanup_ function
   - TODO
 - combines the following class component lifecycle methods:

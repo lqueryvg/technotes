@@ -5,6 +5,7 @@ manage image (.jpg) file attributes
 exiftool -common *      # show common values for all files
 exiftool -T -common *   # tabular format
 exiftool -s -common *   # use real tag names (useful for building more commands)
+exiftool -time:all -s . # show all time related tags for files in . 
 
 
 # Move all files into 
@@ -25,4 +26,8 @@ exiftool '-Directory<DateTimeOriginal' -d %Y_%m_%d *.jpg -execute '-Directory<Fi
 exiftool '-FileName<DateTimeOriginal' -d %Y_%m_%d_%H:%M:%S%%-c.%%e .
 exiftool '-FileName<CreateDate' -d %Y_%m_%d_%H:%M:%S%%-c.%%e .
 exiftool '-FileName<FileModifyDate' -d %Y_%m_%d_%H:%M:%S%%-c.%%e .
+
+# rename PNG file based on time in filename if CreationTime tag not set
+exiftool '-PNG:CreationTime<FileName' file.PNG
+exiftool '-Filename<CreationTime' -d %Y_%m_%d_%H:%M:%S%%-c.%%e file.PNG
 ```
