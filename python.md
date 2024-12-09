@@ -385,6 +385,10 @@ pyenv version                   # show current
 pyenv virtualenv-delete john
 ```
 
+## Debugging
+
+    print(f"move {L=} {R=} {nums=} {k=}")   # debug variable names and values
+
 ## format
 
 From: https://kapeli.com/cheat_sheets/Python_Format_Strings.docset/Contents/Resources/Documents/index
