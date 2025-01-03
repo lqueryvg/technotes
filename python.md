@@ -11,22 +11,23 @@ import pprint
 pprint.pprint(vars(my_object))          # dump object
 print my_object.__dict__
 
+print(f"move {L=} {R=} {nums=} {k=}")   # debug variable names and values
+
 pip show {module}                       # show where source code stored
 pip install some_module==               # show all available versions
 ```
 
-### Array Indices
+### Array indices & slices
 
 ```bash
     0   1   2   3   4
     H   e   l   l   o
    -5  -4  -3  -2  -1
 
-a[start:end] # items start through end-1
-a[start:]    # items start through the rest of the array
-a[:end]      # items from the beginning through end-1
-a[:]         # a copy of the whole array
-a.insert(0, 'a')   # insert at start of list
+a[start:end] # slice of items start through end-1
+a[start:]    # slice of items start through the rest of the array
+a[:end]      # slice of items from the beginning through end-1
+a[:]         # slice copy of the whole array
 
 a[start:end:step] # start through not past end, by step
 a[-1]             # last item in the array
@@ -34,6 +35,14 @@ a[-2:]            # last two items in the array
 a[:-2]            # everything except the last two items
 a[::-1]           # reverse string
 a = "1"; a[:-2]   # empty string
+
+len(a)             # no. of items
+a.append(elt)      # add 1 item at end
+a.extend([1,2,3])  # add 3 more items at end
+a.insert(0, 'a')   # insert at start
+a[-1]              # last elt
+a.pop(0)           # remove first elt & return it
+a.split()          # split on whitespace
 ```
 
 ## Misc
@@ -46,12 +55,7 @@ price = slice(30,40)                      # named slice, use = items[price]
 if s.endswith(":"):   s = s[:-1]          # chop last if is ":"
 if s.startswith(":"): s = s[1:]           # chop first if is ":"
 ",".join(my_list)                         # NB join is method of string, NOT list
-len(my_list)                              # no. of elts in list
 str = str.rstrip()                        # strip whitespace on right
-list.append(elt)
-list.split()                  # split on whitespace
-list[-1]                      # last elt
-list.pop(0)                   # remove first elt & return it
 'row {}'.format(row_number)   # formatting (do NOT use % for formatting)
 os.path.splitext(filename)[0] # remove file extension
 
@@ -62,7 +66,7 @@ a.keys() & b.keys()                      # keys which are common
 a.keys() - b.keys()                      # keys in a that are not in b
 a.items() & b.items()                    # common (key,value) pairs
 first, *middle, last = grades            # extract middle as a list (star expression)
-str.replace(old, new[, count])           # replace old with new in string, count times
+str.replace(old, new[, count]) # replace old with new in string, count times
 
 ("blah blah blah"
  "blah blah blah")      # split long string over multiple lines (but with no newlines)
@@ -271,43 +275,43 @@ make install
 
 ## Flask
 
-    #!/usr/bin/env python
+#!/usr/bin/env python
 
-    import statsd
-    from flask import Flask, request
-    from flask_restful import Resource, Api
-    from json import dumps
+import statsd
+from flask import Flask, request
+from flask_restful import Resource, Api
+from json import dumps
 
-    app = Flask(__name__)
-    api = Api(app)
+app = Flask(**name**)
+api = Api(app)
 
-    counter = 0
-    c = statsd.StatsClient('localhost', 9125)
+counter = 0
+c = statsd.StatsClient('localhost', 9125)
 
-    class Get(Resource):
-        def get(self):
-            return {'counter': counter}
+class Get(Resource):
+def get(self):
+return {'counter': counter}
 
-    class Add(Resource):
-        def get(self):
-            global counter
-            counter = counter + 1
-            c.incr('counter')
-            return {'counter': counter}
-    api.add_resource(Add, '/add')
-    api.add_resource(Get, '/get')
+class Add(Resource):
+def get(self):
+global counter
+counter = counter + 1
+c.incr('counter')
+return {'counter': counter}
+api.add_resource(Add, '/add')
+api.add_resource(Get, '/get')
 
-    if __name__ == '__main__':
-        app.run()
+if **name** == '**main**':
+app.run()
 
 ## dis
 
-    from dis import dis
-    dis(func)    # only funcs allowed
+from dis import dis
+dis(func) # only funcs allowed
 
 ## CLI
 
-    python -i main.py    # drop into interpreter prompt after running
+python -i main.py # drop into interpreter prompt after running
 
 ## pytest
 
@@ -352,7 +356,6 @@ Ctrl .        # fold
 Alt Down / Up # next / prev method
 ```
 
-
 ## pyenv
 
 ```bash
@@ -373,7 +376,7 @@ pyenv global 3.6.5    # set the global version
 pyenv shell 2.7.14    # point this shell to a specific version
 pyenv shell --unset   # deactivate
 pyenv shell -         # previous
-pyenv local           # show 
+pyenv local           # show
 
 git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
 # see ~/dotfiles/profile.d/python.sh for shell init
@@ -385,44 +388,52 @@ pyenv version                   # show current
 pyenv virtualenv-delete john
 ```
 
-## Debugging
-
-    print(f"move {L=} {R=} {nums=} {k=}")   # debug variable names and values
-
 ## format
 
-From: https://kapeli.com/cheat_sheets/Python_Format_Strings.docset/Contents/Resources/Documents/index
+From: <https://kapeli.com/cheat_sheets/Python_Format_Strings.docset/Contents/Resources/Documents/index>
 
-# Width and alignment
-'hey {:10}'.format('hello')       Specify width (Aign left, space fill)
-'{:010}'.format(2)                 Fill with zeroes,                Output: 0000000002
-'{:*^20}'.format('text')           Specify width, align center      Output: '********text********'
+## Width and alignment
 
-# Access methods
-'{}, {}, {}'.format(1, 2, 3)                   position (>=2.7),    Output: 1, 2, 3 
-'{0}, {1}, {2}'.format(1, 2, 3)                ordinal position,    Output: 1, 2, 3
-'{v1}, {v2}, {v2}'.format(v1=1, v2=2, v3=3)   keyword,              Output: 1, 2, 2
-'{[1]}'.format(['1st', '2nd', '3rd'])          index,               Output: 2nd
-'{.name}'.format(sys.stdin)                    element attribute    Output: <stdin>
-'{[name]}'.format({'name': 'thing'})          key                   Output: something 
+```python
+  '{:10}'.format('hello')  # Specify width (Aign left, space fill)
+  '{:010}'.format(2) # 0000000002
+  '{:*^20}'.format('text') # align center, Output: ********text********
+```
 
-# Numerics
-'{:x}'.format(100)            hex                                   Output: 64
-'{:X}'.format(3487)           hex (uppercase)                       Output: D9F
-'{:#x}'.format(100)           hex (including the 0x)                Output: 0x64
-'{:b}'.format(100)            Binary representation                 Output: 1100100
-'{:c}'.format(100)            Character representation              Output: d
-'{:d}'.format(100)            Decimal representation (default)      Output: 100
-'{:,}'.format(1000000)        With thousands separator              Output: 1,000,000
-'{:o}'.format(100)            Octal representation                  Output: 144
-'{:n}'.format(100)            Like d, use locale for separators     Output: 100
-'{:e}'.format(0.0000000001)   Exponent                              Output: 1.000000e-10
-'{:E}'.format(0.0000000001)   Exponent (capital 'E')                Output: 1.000000E-10
-'{:f}'.format(3/14.0)         Fixed point                           Output: 0.214286
-'{:g}'.format(3/14.0)         General format                        Output: 0.214286
-'{:%}'.format(0.66)           Percentage                            Output: 66.000000%
-'{:.3}'.format(0.214286)      Precision                             Output: 0.214
+## Access methods
 
-# Conversion
-'{!r}'.format('string')      Call repr on args                      Output: 'string'
-'{!s}'.format(1.53438987)    Call str on args                       Output: 1.53438987
+```python
+'{}, {}, {}'.format(1, 2, 3)   # Output: 1, 2, 3
+'{0}, {1}, {2}'.format(1, 2, 3)  # Output: 1, 2, 3
+'{v1}, {v2}, {v2}'.format(v1=1, v2=2, v3=3) # Output: 1, 2, 2
+'{[1]}'.format(['1st', '2nd', '3rd']) # Output: 2nd
+'{.name}'.format(sys.stdin)    # Output: <stdin>
+'{[name]}'.format({'name': 'thing'})  # Output: something
+```
+
+## Numerics
+
+```python
+'{:x}'.format(100)    # hex                           Output: 64
+'{:X}'.format(3487)   # hex (uppercase)               Output: D9F
+'{:#x}'.format(100)   # hex (including the 0x)        Output: 0x64
+'{:b}'.format(100)    # Binary representation         Output: 1100100
+'{:c}'.format(100)    # Character representation         Output: d
+'{:d}'.format(100)    # Decimal representation (default) Output: 100
+'{:,}'.format(1000000) # With thousands separator        Output: 1,000,000
+'{:o}'.format(100)     # Octal representation                  Output: 144
+'{:n}'.format(100)     # Like d, use locale for separators     Output: 100
+'{:e}'.format(0.0000000001) # Exponent                Output: 1.000000e-10
+'{:E}'.format(0.0000000001) # Exponent (capital 'E')  Output: 1.000000E-10
+'{:f}'.format(3/14.0)       # Fixed point             Output: 0.214286
+'{:g}'.format(3/14.0)       # General format          Output: 0.214286
+'{:%}'.format(0.66)         # Percentage              Output: 66.000000%
+'{:.3}'.format(0.214286)    # Precision               Output: 0.214
+```
+
+## Conversion
+
+```python
+'{!r}'.format('string')    #  Call repr on args  Output: 'string'
+'{!s}'.format(1.53438987)   # Call str on args   Output: 1.53438987
+```

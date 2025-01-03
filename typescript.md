@@ -1,176 +1,248 @@
 # Typescript
 
-Setup
+## Setup
 
-    yarn add -D typescript
-    yarn exec -- tsc --init
+```
+yarn add -D typescript
+yarn exec -- tsc --init
+```
 
-Basic types
+## Basic types
 
-    string
-    number
-    boolean
+```typescript
+string;
+number;
+boolean;
+```
 
-Arrays
+## Special types & set operations
 
-    number[]
-    Array<number>   # same as above; see generics
-    [number]        # different!; see tuples
+Types are like sets and contain the set of all types that a value can be.
 
-type annotations on variables
+- `|`: union
+- `&`: intersection
+- `never`: empty set
 
-    let myName: string = "Alice";
-        # type not actually needed; inferred
+  ```typescript
+  type X = 1 | never; // 1
+  ```
 
-Function parameters
+- `any`: universal set
 
-    function greet(name: string) {
-        # param will be checked
-    }
+  ```typescript
+  type X = 1 | any; // any
+  ```
 
-Function return values
+- `unknown`: we don't know the type (yet!)
 
-    function getNum(): number {
-        # return type not usually needed; inferred
-    }
+## Arrays
 
-Objects
+```typescript
+number[]
+Array<number>   // same as above; "generic" version
+[number]        // a tuple
+```
 
-    function printCoord(pt: { x: number; y: number }) {
-        # param type is an object with expected properties
-    }
+## type annotations on variables
 
-    function printName(obj: { first: string; last?: string }) {
-        # optional property
+```typescript
+const myName: string = "Alice"; // type not actually needed; inferred
+```
 
-        # it's an error to try to access an optional propery without
-        # first checking for undefined
-        # or, safely use: obj.last?.toUpperCase()
-    }
+## Function parameters
 
-Unions (|)
+```typescript
+function greet(name: string) {
+  // param type will be checked
+}
+```
 
-    function printId(id: number | string) {
-        # id may be number or string
+## Optional properties
 
-    # if it's the union of two objects, then only common
-    # keys can be accessed (since we don't know which it is)
+```typescript
+function printName(obj: { first: string; last?: string }) {
+    ...
+}
+// Both OK
+printName({ first: "Bob" });
+printName({ first: "Alice", last: "Alisson" });
+```
 
-Intersections (&)
+## Function return values
 
-    type B = A & B   # combines all the properties of A and B
+```typescript
+function getNum(): number {
+  // return type not needed; inferred
+  return 42;
+}
+```
 
-    # all keys can be accessed
+## Objects
 
-Guards - typeof
+```typescript
+function printCoord(pt: { x: number; y: number }) {
+    // param is an object with expected properties
+    ...
+}
 
-    # use typeof conditionals to safely work with the param
-    if (typeof id === "string") {
-        console.log(id.toUpperCase())
-    }
+function printName(obj: { first: string; last?: string }) {
+    // `last` is an optional property
+    ...
+```
 
-    # use Array.isArray(x) to determine if a param is an array
+It's an error to try to access an optional propery without first checking it is
+defined, e.g. use: `obj.last?.toUpperCase()`
 
-    # == & != check for null or undefined
+## Unions (`|`)
 
-Guard - null & undefined
+```typescript
+function printId(id: number | string) {
+  // id may now be number or string
+  ...
+```
 
+If it's the union of two _objects_, then only common
+keys can be accessed.
+
+## Intersections (&)
+
+```typescript
+type B = A & B;
+```
+
+Combines all the properties of A and B.
+
+## Guards - typeof
+
+- Use typeof conditionals to safely work with a param
+
+  ```typescript
+  if (typeof id === "string") {
+    console.log(id.toUpperCase());
+  }
+  ```
+
+- Use `Array.isArray(x)` to determine if a param is an array.
+
+- `==`, `&` and `!=` check for `null` or `undefined`
+
+### Guard - null & undefined
+
+```typescript
     let x: number | null | undefined
     if (x != null) {
     if (x != undefined) { // same as above
         // x must now be a number
+```
 
-Aliases (not preferred; use interfaces first)
+## Aliases
 
-    type Animal = {
-        name: string
-    };
+```typescript
+type Animal = {
+  name: string;
+};
 
-    type Bear = Animal & {
-        honey: boolean
-    }
+type Bear = Animal & {
+  honey: boolean;
+};
 
-    function printAnimal(animal: Animal) {
-    }
+function printAnimal(animal: Animal) {}
 
-    type ID = number | string;
+type ID = number | string;
+```
 
-    # Aliases are not types themselves: using an alias is
-    # exactly the same as using the original type
+Aliases are not types themselves: using an alias is
+exactly the same as using the original type
 
-Interfaces
+## Interfaces
 
-    like an alias, but can be extended
+like an alias, but can be redefined
 
-    interface Animal {
-        name: string
-    }
+```typescript
+interface Animal {
+  name: string;
+}
 
-    interface Animal {
-        size: number  # not possible with types
-    }
+interface Animal {
+  size: number; // not possible with types
+}
 
-    interface Bear extends Animal {
-        honey: boolean
-    }
+interface Bear extends Animal {
+  honey: boolean;
+}
+```
 
-Type assertions
+## Type assertions
 
-    # like a cast; use when you know more about the type than TS does
+like a cast; use when you know more about the type than TS does
 
-    let someValue: unknown = "this is a string"
-    let strLength: number = (someValue as string).length
-    let strLength: number = (<string>someValue).length
-        # same, but doesn't work in JSX
+```typescript
+let someValue: unknown = "this is a string"
+let strLength: number = (someValue as string).length
 
-    onst x = "hello" as number;        # error
+// The following is the same, but does not work in JSX
+let strLength: number = (<string>someValue).length
 
-Index Signatures
+const x = "hello" as number;        # error
+```
 
-    interface BooleanDictionary {
-      [key: string]: boolean;
-    }
+## Index Signatures
 
-Generics
+```typescript
+interface BooleanDictionary {
+  [key: string]: boolean;
+}
+```
 
-    function printName(obj: { first: string; last?: string }) {
-    // ...
-    }
-    // Both OK
-    printName({ first: "Bob" });
-    printName({ first: "Alice", last: "Alisson" });
+##  Optional Chaining
 
-Optional Chaining
+```typescript
+let x = foo?.bar.baz();
+```
 
-    let x = foo?.bar.baz();
+## Non-null assertion
 
-Non-null assertion
+```typescript
+let s = e!.name; // stop complaining about e possibly being null (not an actual assert)
+const foo = someFunc()!; // post-fix
+```
 
-    let s = e!.name           // stop complaining about e possibly being null (not an actual assert)
-    const foo = someFunc()!   // post-fix
+## Nullish Coalescing
 
-Nullish Coalescing
+```typescript
+let x = foo ?? bar; // x = bar if foo is null or undefined
+```
 
-    let x = foo ?? bar    // x = bar if foo is null or undefined
+## Maps
 
-Maps:
+```typescript
+const scores = new Map<string, number>([
+  ["a", 1],
+  ["b", 2],
+]);
+const total = scores.get("a");
+```
 
-    const scores = new Map<string, number>([
-      ['a', 1],
-      ['b', 2],
-    ])
-    const total = scores.get('a')
+## Bitwise Operators inside enums
 
-Misc:
+```typescript
+enum Gift {
+  Coal = 0b00000,
+  Train = 0b00001,
+  Bicycle = 0b00010,
+  SuccessorToTheNintendoSwitch = 0b00100,
+  TikTokPremium = 0b01000,
+  Vape = 0b10000,
+  Traditional = Train | Bicycle,
+  OnTheMove = Coal | Bicycle | TikTokPremium | Vape,
+  OnTheCouch = (OnTheMove & ~Bicycle) | SuccessorToTheNintendoSwitch,
+}
+```
 
-    'a'.charCodeAt(0)   // ascii
-    'string'.substring(i, 5)
-    'string'.charAt(i)
-    ['1', '2'].map(Number) // convert all strings to numbers
+## Misc
 
-Sets:
-
-never - empty set
-any - universal set
-| - union
-& - intersection
+```typescript
+"a".charCodeAt(0); // ascii
+"string".substring(i, 5);
+"string".charAt(i)[("1", "2")].map(Number); // convert all strings to numbers
+```
