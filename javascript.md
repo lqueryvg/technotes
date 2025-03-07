@@ -19,16 +19,15 @@ Example 2:
 
 2. can use variables before they've been declared (hoisting #1):
 
-    console.log(a)  // prints "undefined", instead of an exception
-    var a = 2
+   console.log(a) // prints "undefined", instead of an exception
+   var a = 2
 
 3. can use variables declared from an inner scope (hoisting #2:
 
-    { var a = "2" }
-    console.log(a) // 2
+   { var a = "2" }
+   console.log(a) // 2
 
 4. var variables are added to window object
-
 
 ## Debugging tip
 
@@ -47,11 +46,11 @@ Wrap the variable in an object:
 ## arrow functions
 
     const functionName = param => { body; };
-    const functionName = (param1, param2) => { body; };      
+    const functionName = (param1, param2) => { body; };
 
 ## `...` syntax (spread & rest)
 
-On RHS of assigment (spread *expands* the elements):
+On RHS of assigment (spread _expands_ the elements):
 
     const other = [ 1, 2, ...rows ];    # expand all elements of 'rows' array
 
@@ -64,7 +63,7 @@ On RHS of assigment (spread *expands* the elements):
     const clonedObj = { ...obj1 };          # Object { foo: "bar", x: 42 }
     const mergedObj = { ...obj1, ...obj2 }; # Object { foo: "baz", x: 42, y: 13 }
 
-On LHS of assignment (spread *collects* the elements):
+On LHS of assignment (spread _collects_ the elements):
 
     const [a, ...data] = rows;      # collector: put first (of 'rows' array) in 'a' and put rest in new 'data' array
     const [, ...data] = rows;       # collector: as above but skip first
@@ -125,4 +124,3 @@ E.g. `export NODE_PATH=/usr/local/lib/node_modules`
 
     const match = line.match(/(...)=(\S+) -> (.*)/)
     const [_, prefix, name, targetsText] = match!
-

@@ -190,6 +190,7 @@ re-renders when the button is clicked.
   initial state which will only be ignored on subsequent re-renders
 
   ```JSX
+    // hook to get / set a value in state persisted by local storage
     const useLocalStorage = (key, initialValue) => {
       const [value, setValue] = useState(() => localStorage.getItem(key) ?? initialValue)
       useEffect(() => {
@@ -505,7 +506,7 @@ const App = () => {
 
 - MYTH: keys improve performance or prevent re-renders
 
-  - keys can help React.memo() avoid re-renders
+  - but keys _can_ help React.memo() avoid re-renders
 
 - If a component is replaced with another component of the same type
   in the same position but with a different key, the component is
@@ -513,6 +514,11 @@ const App = () => {
 
 - Can be used to force React to re-use an existing component. This
   avoids the re-mount and preserves state.
+
+- If you can't find anything unique in the list siblings,
+  generate one with `crypto.randomUUID()`. It's recommended by
+  major web standards and the probability of collisions
+  is very low.
 
 ## Component lifecycle
 
@@ -855,6 +861,31 @@ function useDebounce(value, delay) {
     return () => clearTimeout(handler);
   }, [value, delay]);
   return debouncedValue;
+}
+```
+
+## Testing Library
+
+```typescript
+test("an example test", async () => {
+  render(<App />);
+
+  // assert something is visible right now "getBy..."
+  screen.getByText(/Loading.../)
+
+  // wait for something to appear "findBy... + await"
+  await screen.findByText(/Loaded/);
+
+  // assert something is not there "queryBy..."
+  const textElement = screen.queryByText(/Loading.../);
+  expect(textElement).toBeNull();
+
+  // enter some find of input
+  const address = await screen.findByLabelText("Address");
+  fireEvent.change(address, { target: { value: "123, New Road" } });
+
+  // click a button
+  fireEvent.click(await screen.findByRole("button", { name: "Submit" }));
 }
 ```
 

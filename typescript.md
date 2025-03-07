@@ -246,3 +246,44 @@ enum Gift {
 "string".substring(i, 5);
 "string".charAt(i)[("1", "2")].map(Number); // convert all strings to numbers
 ```
+
+## Jest mock fetch
+
+```typescript
+global.fetch = jest.fn(); // before
+(global.fetch as jest.Mock).mockRestore(); // after
+
+// happy path
+(global.fetch as jest.Mock).mockResolvedValue({
+  json: async () => {... happy stuff},
+  ok: true,
+});
+
+// simulate http error
+(global.fetch as jest.Mock).mockResolvedValue({
+  ok: false,
+  status: 404,
+});
+
+// simulate throws an error
+(global.fetch as jest.Mock).mockRejectedValue(new Error("test error"));
+```
+
+## tsconfig targets
+
+| Target     | Node Version  | Date | Key Features Added                        |
+| ---------- | ------------- | ---- | ----------------------------------------- |
+| ES3        | All versions  | 1999 | Basic (var function-scoped), no modern    |
+|            |               |      | constructs.                               |
+| ES5        | 0.12.x (2014) | 2009 | JSON methods, Array helpers (e.g., map),  |
+|            |               |      | strict mode, getters/setters.             |
+| ES6/ES2015 | 4.0.0 (2015)  | 2015 | let/const, classes, arrow functions,      |
+|            |               |      | Promises, modules (import/export).        |
+| ES2016     | 7.0.0 (2017)  | 2016 | Exponent (\*\*), Array.prototype.includes |
+| ES2017     | 8.0.0 (2017)  | 2017 | async/await, Object.values/entries,       |
+|            |               |      | string padding, trailing commas.          |
+| ES2020     | 14.0.0 (2020) | 2020 | Optional chaining (?.), nullish           |
+|            |               |      | coalescing (??), Promise.allSettled.      |
+| ES2022     | 16.0.0 (2021) | 2022 | Class static blocks, top-level await,     |
+|            |               |      | #private class fields.                    |
+| ESNext     | n/a           | n/a  | Proposals e.g., decorators, Record/Tuple  |

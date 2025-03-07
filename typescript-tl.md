@@ -173,6 +173,27 @@ type T = BuildArrays<"abc", 1 | 2 | 3>;
 type ApiRequest<T, S = "GET"> = { data: T; method: S }; // S has a default
 ```
 
+## Use `infer` to convert `string` to `number`
+
+```typescript
+type StringToNumber<T extends string> = T extends `${infer N extends number}`
+  ? N
+  : never;
+
+type T1 = StringToNumber<"1">; // 1
+type T2 = StringToNumber<"abc">; // never
+
+// now apply to all values in an object
+type StringValuesToNumbers<T extends Record<string, string>> = {
+  [K in keyof T]: StringToNumber<T[K]>;
+};
+type T = StringValuesToNumbers<{ a: "1"; b: "2" }>; // { a: 1, b: 2 }
+type T = StringValuesToNumbers<{ a: "1"; b: "2"; c: 1 }>;
+// error: does not satisfy the constraint Record .
+// Property c is incompatible with index signature.
+// etc
+```
+
 ## Working with object keys and values
 
 ```typescript
