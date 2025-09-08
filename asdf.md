@@ -26,6 +26,6 @@
     asdf uninstall {name} {version}
     asdf global {name} latest
     
-    asdf {global|shell|local} {name} {latest|version}
+    asdf set {name} {latest|version}   # set in current .tool-version
 
     asdf which command
