@@ -46,7 +46,8 @@ defaults write com.googlecode.iterm2 NSUserKeyEquivalents -dict-add 'Clear Buffe
 
 ### Clear Buffer Shortcut
 
-Go to `System Settings` & find application keyboard shortcuts.
+Go to `System Settings` (old = `System Preferences`)
+-> Keyboard Shortcuts -> App Shortcuts
 Choose iterm, menu name = `Clear Buffer`, key stroke = `shift-ctrl-k`
 
 ## less common
