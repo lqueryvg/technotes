@@ -39,7 +39,15 @@ Cmd d             # vert split
 Cmd Shift d       # horiz split
 Cmd Enter         # fullscreen toggle
 Alt Click         # select when in vim
+
+
+defaults write com.googlecode.iterm2 NSUserKeyEquivalents -dict-add 'Clear Buffer' '^k';
 ```
+
+### Clear Buffer Shortcut
+
+Go to `System Settings` & find application keyboard shortcuts.
+Choose iterm, menu name = `Clear Buffer`, key stroke = `shift-ctrl-k`
 
 ## less common
 

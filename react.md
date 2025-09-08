@@ -889,6 +889,21 @@ test("an example test", async () => {
 }
 ```
 
+## Core Web Vitals
+
+- LCP - Largest Contentful Paint
+  - time for largest element to load
+- INP - Interaction to Next Paint
+  - time between user interaction and next visual update
+- CLS - Cummulative Layout Shift
+  - unexpected layout shifts as page loads
+
+## Other metrics
+
+- FCP - First Contentful Paint
+- TTFB - Time To First Byte
+- FID - First Input Delay
+
 ## Misc
 
 - `localStorage.setItem(key, value)` / `localStorage.getItem(key)`

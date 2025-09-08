@@ -1,5 +1,4 @@
-
-## min heap
+#  min heap
 
 - properties
 
@@ -14,7 +13,7 @@
         is at the top) until the bottom level is full,
         then the next level is populated
 
-### observations
+## observations
 
 - height is log(n)
 - root to leaf operations are O(log(n))
@@ -32,8 +31,8 @@
 - assuming array indexes start at 0
 - root it at index 0
 - the the k'th element
-  - left child is at 2*k + 1
-  - right child is at 2*k + 2
+  - left child is at 2\*k + 1
+  - right child is at 2\*k + 2
   - parent is at floor((k-1)/2)
 
 #### insert
@@ -43,10 +42,9 @@
 
 ### delete min
 
-  - remove from root
-  - move last to root
-  - bubble down from root:
-    - if value is greater than smallest immediate child
-      - swap with that child
-    - continue bubbling down until no further swaps
-
+- remove from root
+- move last to root
+- bubble down from root:
+  - if value is greater than smallest immediate child
+    - swap with that child
+  - continue bubbling down until no further swaps

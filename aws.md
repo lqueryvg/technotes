@@ -70,7 +70,7 @@ List of Regions with names: https://docs.aws.amazon.com/general/latest/gr/rande.
 
     # list VPCs with Name (tag) and CIDR
     aws ec2 describe-vpcs --output table --query '
-        Vpcs[].[Tags[?Key==`Name`] 
+        Vpcs[].[Tags[?Key==`Name`]
         | [0].Value, CidrBlock, VpcId]
       '
 
@@ -161,7 +161,7 @@ aws ssm put-parameter --name /blah/de/blah \   # put multiline value from file
 ## cloudfront
 
 ```
-aws cloudfront create-invalidation --distribution-id $distid --paths /index.html 
+aws cloudfront create-invalidation --distribution-id $distid --paths /index.html
 aws cloudfront list-invalidations --distribution-id $distid
 aws cloudfront get-invalidation --distribution-id $distid --id {blah}
 distribution_id=$(aws cloudfront list-distributions \
@@ -170,9 +170,11 @@ distribution_id=$(aws cloudfront list-distributions \
 ```
 
 ## S3
+
 If you want website bucket to redirect to another bucket, you have
 to use the WEBSITE endpoint, not a REST endpoint (unfortunately the
 CloudFront web UI offers a REST endpoint by default).
+
 ```
 REST ${bucket_name}.s3.amazonaws.com
 REST ${bucket_name}.s3.${region}.amazonaws.com
@@ -180,7 +182,6 @@ WEBSITE ${bucket_name}.s3-website.${region}.amazonaws.com
 ```
 
 ## ACM Feature / Bug
-
 
 ### Question
 
@@ -209,14 +210,13 @@ This is despite the fact that I only have 2 certificates:
 ### Answer
 
 > The reason you were unable to create new certificates is because of a low or
-> non-existent 'containment score' in the us-east-1 region of the account
-> 123431574831. What does this actually mean? Containment score is an anti-fraud
+> non-existent 'containment score' in the us-east-1 region of the account 123431574831. What does this actually mean? Containment score is an anti-fraud
 > mechanism and when you are using a new region that has no prior EC2 instances
 > in it, you may run into this problem. You can avoid it by launching a small EC2
 > instance in the specific region - it should give you a containment score within
 > a few minutes, but it may take up to 4 hours on rare occasions. After that, you
 > should be good to go and you are free to delete the instance.
-> 
+>
 > Our fraud team is definitely aware this creates a pain point for legitimate
 > customers like you and they are actively looking into a better long-term
 > solution. I had someone from the billing team look into your organization's
@@ -225,12 +225,27 @@ This is despite the fact that I only have 2 certificates:
 > created accounts, however, may have to do the EC2 strategy to get a containment
 > score up and running.
 
-
-
-
 ## Lambda
 
-    xyzhandler(event, context, callback)
-    callback(error, response)       # call this from a sync handler (not async)
-                                    # set error to null to return a response
-                                    # response can be anything which can be stringified
+```python
+xyzhandler(event, context, callback)
+  callback(error, response)  # call this from a sync handler (not async)
+                             # set error to null to return a response
+                             # response can be anything which can be stringified
+```
+
+## EventBridge
+
+- rules
+- event bus
+- event bridge scheduler
+  - can specify start and end time window for rate & cron events
+  - many overlaps with eventbridge rules
+  - one time events
+    - schedule event at a particular time
+    - give payload
+  - flexible time windows
+    - trigger events for multiple targets over a period of time
+  - automatic retries
+  - dead letter queues
+- can call API directly
