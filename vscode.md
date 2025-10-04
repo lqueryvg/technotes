@@ -19,6 +19,7 @@
 
 ## VSCode Vim
 
+
     Sx    # surround visual selection with x
     dsx   # delete surrounding x
     csxy  # change surrounding x to y
@@ -28,3 +29,5 @@
     af    # select larger block of text
     gq    # re-flow block of text
     gd    # go to definition
+
+To map Ctrl-Esc to toggle vim: Help -> search keyboard shortcuts -> search toggle vim
