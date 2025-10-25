@@ -3,6 +3,7 @@
 ## keys
 
 ```
+Ctrl Cmd q          # lock screen
 Fn Up / Down        # page up / down
 Cmd z x c v         # undo cut copy paste
 Ctrl Left / Right   # nav workspaces

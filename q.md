@@ -7,3 +7,9 @@ ctrl-j   # multi-line
 
 .amazonq/ # project context
 
+## Flow
+
+- spec
+- plan
+- tasks
+- implement

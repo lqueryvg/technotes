@@ -29,6 +29,8 @@
 
 ## `String` vs `&str`
 
+Internally 
+
 Similarities:
 
 - both are UTF-8 encoded
@@ -38,7 +40,7 @@ Similarities:
 
 Differences:
 
-| Feature           | `String`                                  | `&str`                                                                                               |
+| Feature           | `String`                                  | `&str` (slice)                                                                                       |
 | ----------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **Ownership**     | Owns                                      | Borrows                                                                                              |
 | **Memory**        | Heap-allocated (dynamic size)             | Can point to various memory locations (string literals, parts of `String`, etc.)                     |
@@ -47,10 +49,17 @@ Differences:
 | **Creation Cost** | More expensive (heap alloc)               | Cheaper (just pointers and length)                                                                   |
 | **Use Cases**     | own, modify, or build strings dynamically | view or pass string data without ownership, e.g. function arguments, string literals, and efficiency |
 | **Internals**     | Contains pointer, length and capacity     | Contains pointer and length                                                                          |
+Convert between `String` and `&str`:
+
+```rust
+let foo = "hello" // start with string literal &str
+let bar = foo.to_string() // convert to owned String
+let car = &bar // get string literal &str of bar with borrow operator
+```
 
 ## Commands
 
-```
+```bash
 cargo watch -x run
 cargo watch -x "run --bin mem"
 ```
@@ -64,7 +73,7 @@ cargo watch -x "run --bin mem"
 ## Shadowing
 
 ```rust
-  let spaces = "   ";
+  let spaces = "   "; // string literal
   let spaces = spaces.len(); // shadow string with number variable
   // spaces is now a number, shadowing the previous string variable
 ```
@@ -74,7 +83,7 @@ cargo watch -x "run --bin mem"
 - lasts until scope ends
 - can be used on immutable variables
 
-````rust
+```rust
 fn main() {
     let input = "123";
     match input.parse::<i32>() {
@@ -87,5 +96,5 @@ fn main() {
             println!("Failed to parse input.");
         }
     }
-}```
-````
+}
+```
