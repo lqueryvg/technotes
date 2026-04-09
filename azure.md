@@ -18,9 +18,11 @@ az group deployment create \
 master=buxtontest.ukwest.cloudapp.azure.com
 
 az component update   # update az CLI
+```
 
-# TODO replace this with ssh-agent approach
+TODO: replace the following with ssh-agent approach
 
+```
 id=id_rsa   # danger!
 scp -p ~/.ssh/${id} azureuser@${master}:.ssh
 kc=/tmp/${master}.kubeconfig
@@ -32,9 +34,8 @@ ssh {node_ip}
 
 kubectl proxy   # could be 10 mins 
 
-# a test pod
 
-kubectl run nginx --image nginx
+kubectl run nginx --image nginx     # a test pod
 ip=$(kubectl get pods -o yaml | grep podIP | awk '{print $2}')
 curl $ip
 
@@ -48,7 +49,6 @@ change
   to
     "type: LoadBalancer"
 kubectl get svc   -w     # wait a couple of mins for <pending> to change to an address below...
-
 
 
 az vm list  -o jsonc            # colour json output
@@ -96,7 +96,7 @@ az storage blob  list --container-name $container \
   --connection-string $query_string \
   --query "[?name=='fred'].properties.contentLength"
 
-#  --source-uri https://{blah}.blob.core.windows.net/vhds/template/10GB_Disk.vhd  \
+  # --source-uri https://{blah}.blob.core.windows.net/vhds/template/10GB_Disk.vhd  \
 
 # view various limits and how much being used (e.g. cpus)
 az vm list-usage -l west-europe
@@ -108,6 +108,7 @@ RG - Role - {Users,Groups,Apps}
      |
      \> {Contributor,Owner,Reader,Custom}
 ```
+
 ## Custom Roles
 - roles are assigned actions which define what the role allows
 - AssignableScopes defines what objects (specific sub, rg or resource) the role is assignable to
